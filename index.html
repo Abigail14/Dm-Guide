@@ -1,0 +1,1366 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DM-Handbuch 5e</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky Reiterleiste oben, darunter ein Raster aus Regelkarten; NPC-Generator als Werkzeug mit Sperr-Schaltern */
+:root{
+  --bg:#eef1f0; --surface:#ffffff; --surface-2:#e3e8e6; --fg:#1d2624; --muted:#5a6764; --line:#cdd6d3;
+  --accent:#17625a; --accent-ink:#ffffff; --accent-soft:#d5ebe7; --d20:#b2342a; --d20-soft:#f6dedb;
+  --good:#2f7a3d; --warn:#9a6a00;
+  --f-display:"Alegreya SC",Georgia,serif; --f-body:"Alegreya Sans","Segoe UI",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121817; --surface:#1a2221; --surface-2:#232d2b; --fg:#e4ebe9; --muted:#9aa9a5; --line:#2f3b39;
+  --accent:#5cc2b3; --accent-ink:#0d1716; --accent-soft:#1f3a36; --d20:#f0857a; --d20-soft:#3d2321;
+  --good:#7ccf8a; --warn:#e2b44c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121817; --surface:#1a2221; --surface-2:#232d2b; --fg:#e4ebe9; --muted:#9aa9a5; --line:#2f3b39;
+  --accent:#5cc2b3; --accent-ink:#0d1716; --accent-soft:#1f3a36; --d20:#f0857a; --d20-soft:#3d2321;
+  --good:#7ccf8a; --warn:#e2b44c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:1.7rem;letter-spacing:.02em}
+h2{font-size:1.45rem;margin-block:28px 12px;color:var(--accent)}
+h3{font-size:1.12rem;font-weight:700}
+p{margin:0}
+.en{font-family:var(--f-body);font-weight:500;font-size:.78em;color:var(--muted);letter-spacing:.02em;font-style:italic;white-space:nowrap}
+.mono,code{font-family:var(--f-mono);font-size:.88em}
+code{background:var(--surface-2);padding:1px 5px;border-radius:4px}
+a{color:var(--accent)}
+
+/* Kopf */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.head-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding-block:12px 8px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{flex:none}
+.brand small{display:block;font-size:.8rem;color:var(--muted);font-family:var(--f-body)}
+.search{margin-left:auto;flex:1 1 220px;max-width:340px;position:relative}
+.search input{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:inherit;font-size:.95rem}
+.search input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+nav.tabs a{flex:none;text-decoration:none;color:var(--muted);font-weight:500;padding:6px 12px;border-radius:999px;font-size:.95rem}
+nav.tabs a:hover{color:var(--fg);background:var(--surface-2)}
+nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+nav.tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+main{padding-block:8px 60px}
+.panel[hidden]{display:none!important}
+.lead{max-width:68ch;color:var(--muted);margin-top:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3 .en{margin-left:6px}
+.card ul,.card ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+.tip{background:var(--accent-soft);border-radius:8px;padding:8px 12px;font-size:.95rem}
+.tip b{color:var(--accent)}
+.warnbox{background:var(--d20-soft);border-radius:8px;padding:8px 12px;font-size:.95rem}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+td.n,th.n{text-align:right}
+.pill{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.pill.str{background:#e9d8d4;color:#6d2a20}.pill.dex{background:#d8e7d6;color:#2c5a26}.pill.con{background:#ecdfc8;color:#6a4a0d}
+.pill.int{background:#d5e0ef;color:#24456f}.pill.wis{background:#e3d9ec;color:#4f2f6d}.pill.cha{background:#f0d7e3;color:#6d2349}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pill.str{background:#46302c;color:#f1c4bb}:root:not([data-theme="light"]) .pill.dex{background:#2c4129;color:#c4e6be}:root:not([data-theme="light"]) .pill.con{background:#45391f;color:#ecd39d}:root:not([data-theme="light"]) .pill.int{background:#25344a;color:#bcd2f2}:root:not([data-theme="light"]) .pill.wis{background:#382c45;color:#dac6ef}:root:not([data-theme="light"]) .pill.cha{background:#46283a;color:#f1c2db}}
+:root[data-theme="dark"] .pill.str{background:#46302c;color:#f1c4bb}:root[data-theme="dark"] .pill.dex{background:#2c4129;color:#c4e6be}:root[data-theme="dark"] .pill.con{background:#45391f;color:#ecd39d}:root[data-theme="dark"] .pill.int{background:#25344a;color:#bcd2f2}:root[data-theme="dark"] .pill.wis{background:#382c45;color:#dac6ef}:root[data-theme="dark"] .pill.cha{background:#46283a;color:#f1c2db}
+
+/* Attribute */
+.abil{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,350px),1fr));gap:14px}
+.abil .card{border-top:4px solid var(--line)}
+.abil .ab-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.abil .ab-head .pill{font-size:.85rem}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.95rem}
+.kv dt{color:var(--muted);font-weight:500}
+.kv dd{margin:0}
+
+/* Modifikator-Leiste */
+.modbar{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+.modbar div{background:var(--surface-2);border-radius:8px;padding:6px 4px;text-align:center;font-variant-numeric:tabular-nums}
+.modbar b{display:block;font-family:var(--f-mono);font-size:1.05rem}
+.modbar span{font-size:.8rem;color:var(--muted)}
+
+/* Würfelbecher */
+.dice-row{display:flex;flex-wrap:wrap;gap:6px}
+button,.btn{font:inherit;font-size:.95rem;font-weight:500;cursor:pointer;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);padding:6px 12px;border-radius:8px}
+button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button.d20{background:var(--d20);color:#fff;border-color:var(--d20)}
+.roll-out{font-family:var(--f-mono);background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:8px 12px;min-height:2.6em}
+.roll-out b{font-size:1.3rem;color:var(--d20)}
+input[type=text],input[type=number],select{font:inherit;font-size:.95rem;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);min-width:0}
+
+/* Entscheidungshilfe */
+.flow{display:grid;gap:10px}
+.flow .step{display:grid;grid-template-columns:2.2rem 1fr;gap:10px;align-items:start}
+.flow .num{width:2.2rem;height:2.2rem;border-radius:50%;background:var(--d20);color:#fff;display:grid;place-items:center;font-family:var(--f-display);font-weight:700}
+
+/* Encounter */
+.enc-in{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.enc-in label{display:flex;flex-direction:column;gap:3px;font-size:.85rem;color:var(--muted)}
+.budget{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.budget div{border-radius:8px;padding:8px 10px;background:var(--surface-2);font-variant-numeric:tabular-nums}
+.budget div b{display:block;font-size:1.25rem;font-family:var(--f-mono)}
+.budget div span{font-size:.8rem;color:var(--muted)}
+.mon-list{display:flex;flex-direction:column;gap:6px}
+.mon-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.verdict{font-weight:700;padding:8px 12px;border-radius:8px;background:var(--accent-soft)}
+.verdict.hard{background:var(--d20-soft);color:var(--d20)}
+
+/* NPC */
+.npc-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:820px){.npc-layout{grid-template-columns:1fr}}
+.npc-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.npc-top{background:var(--accent);color:var(--accent-ink);padding:16px 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.npc-top h3{font-size:1.6rem;flex:1 1 auto}
+.npc-top .sub{width:100%;font-size:.95rem;opacity:.9}
+.npc-fields{display:flex;flex-direction:column}
+.f-row{display:grid;grid-template-columns:8.5rem 1fr auto;gap:10px;align-items:start;padding:10px 18px;border-bottom:1px solid var(--line)}
+.f-row .lab{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;padding-top:3px}
+.f-row .val{min-width:0}
+.f-row.quote .val{font-style:italic}
+@media (max-width:520px){.f-row{grid-template-columns:1fr auto}.f-row .lab{grid-column:1/-1;padding-top:0}}
+.lock{border:none;background:transparent;padding:2px 6px;color:var(--muted);font-size:.8rem;border-radius:6px}
+.lock[aria-pressed="true"]{background:var(--d20-soft);color:var(--d20);font-weight:700}
+.npc-actions{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px}
+.statblock{margin:0 18px 18px;border:2px solid var(--d20);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.statblock h4{margin:0;font-family:var(--f-display);font-size:1.15rem;color:var(--d20)}
+.sb-line{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.95rem}
+.sb-abil{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;text-align:center;font-variant-numeric:tabular-nums}
+.sb-abil div{background:var(--surface-2);border-radius:6px;padding:4px 2px;font-size:.85rem}
+.sb-abil b{display:block;font-family:var(--f-mono);font-size:.95rem}
+@media (max-width:420px){.sb-abil{grid-template-columns:repeat(3,1fr)}}
+.sb-act p{font-size:.95rem}
+.hist{display:flex;flex-direction:column;gap:6px}
+.hist button{text-align:left;display:flex;justify-content:space-between;gap:8px;width:100%}
+.hist button span{color:var(--muted);font-size:.85rem}
+.empty{color:var(--muted);font-size:.95rem}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:.9rem;z-index:20}
+.searchnote{margin-top:16px;color:var(--muted)}
+.hidden-by-search{display:none!important}
+footer{color:var(--muted);font-size:.85rem;padding-block:20px 40px;border-top:1px solid var(--line)}
+/* Charaktere */
+.char-head{display:flex;flex-direction:column;gap:8px;margin-top:36px;padding-top:18px;border-top:2px solid var(--line);scroll-margin-top:150px}
+.char-head h2{margin:0}
+.char-head .who{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--surface-2);border-radius:999px;padding:3px 10px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.chip b{font-family:var(--f-mono);font-size:.95em}
+.chip.hot{background:var(--d20-soft);color:var(--d20)}
+.spells{display:flex;flex-direction:column;gap:12px}
+.spell{border-left:3px solid var(--accent);padding-left:10px;display:flex;flex-direction:column;gap:2px}
+.spell .nick{color:var(--muted);font-style:italic}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:999px;background:var(--surface-2);color:var(--muted);margin-left:4px;vertical-align:2px}
+.tag.k{background:var(--d20-soft);color:var(--d20)}
+.slots{font-family:var(--f-mono);font-size:.9rem}
+.jump{display:flex;flex-wrap:wrap;gap:6px}
+.rg-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.rg-form label{display:flex;flex-direction:column;gap:3px;font-size:.85rem;color:var(--muted)}
+textarea{font:inherit;font-size:.95rem;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);width:100%;min-height:5em;resize:vertical}
+@media (prefers-reduced-motion:no-preference){.npc-card{transition:box-shadow .2s}.flash{animation:fl .35s ease}@keyframes fl{from{opacity:.35}to{opacity:1}}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="head-row">
+      <div class="brand">
+        <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><polygon points="17,2 31,10 31,24 17,32 3,24 3,10" fill="var(--d20)"/><polygon points="17,8 26,23 8,23" fill="none" stroke="#fff" stroke-width="1.6"/><text x="17" y="21" text-anchor="middle" font-size="8" font-family="JetBrains Mono,monospace" fill="#fff" font-weight="700">20</text></svg>
+        <div><h1>DM-Handbuch 5e</h1><small>Regeln 2024 (SRD 5.2) · Deutsch mit englischen Begriffen</small></div>
+      </div>
+      <div class="search"><input id="q" type="search" placeholder="Regel suchen, z.B. Liegend, Prone, Deckung" aria-label="Regeln durchsuchen"></div>
+    </div>
+    <nav class="tabs" aria-label="Bereiche">
+      <a href="#grundlagen">Charakterbogen</a>
+      <a href="#wuerfe">Würfe &amp; Proben</a>
+      <a href="#kampf">Kampf</a>
+      <a href="#zustaende">Zustände</a>
+      <a href="#welt">Rast, Magie &amp; Welt</a>
+      <a href="#begegnung">Begegnungen</a>
+      <a href="#charaktere">Charaktere</a>
+      <a href="#npc">NPC-Generator</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<p class="searchnote" id="searchnote" hidden></p>
+
+<!-- ===================== CHARAKTERBOGEN ===================== -->
+<section class="panel" id="p-grundlagen" data-tab="grundlagen">
+  <p class="lead">Alles, was auf einem Charakterbogen steht, mit deutschem und englischem Namen. Die englischen Begriffe stehen kursiv daneben, weil die meisten Bögen und D&amp;D Beyond englisch sind.</p>
+
+  <h2>Die sechs Attribute <span class="en">Ability Scores</span></h2>
+  <div class="abil">
+    <div class="card" style="border-top-color:#b0574a"><div class="ab-head"><span class="pill str">STR</span><h3>Stärke <span class="en">Strength</span></h3></div>
+      <p>Körperkraft. Wie fest jemand zuschlägt, hebt, zieht, springt und klettert.</p>
+      <dl class="kv"><dt>Proben</dt><dd>Athletik <span class="en">Athletics</span></dd><dt>Angriffe</dt><dd>Nahkampfwaffen (außer Finesse), Würfe mit Wurfwaffen</dd><dt>Rettungswurf</dt><dd>Gegen Wegstoßen, Festhalten, Umgeworfen werden</dd><dt>Sonst</dt><dd>Tragkraft, Weitsprung (Fuß = STR-Wert), Hochsprung (3 + STR-Mod Fuß)</dd></dl></div>
+    <div class="card" style="border-top-color:#4d8a44"><div class="ab-head"><span class="pill dex">DEX</span><h3>Geschicklichkeit <span class="en">Dexterity</span></h3></div>
+      <p>Reflexe, Beweglichkeit, Fingerspitzengefühl.</p>
+      <dl class="kv"><dt>Proben</dt><dd>Akrobatik, Fingerfertigkeit, Heimlichkeit</dd><dt>Angriffe</dt><dd>Fernkampfwaffen, Finesse-Waffen (Dolch, Rapier)</dd><dt>Rettungswurf</dt><dd>Feuerball, Fallen, Explosionen ausweichen</dd><dt>Sonst</dt><dd><b>Initiative</b> und meist die <b>Rüstungsklasse</b></dd></dl></div>
+    <div class="card" style="border-top-color:#a77a1f"><div class="ab-head"><span class="pill con">CON</span><h3>Konstitution <span class="en">Constitution</span></h3></div>
+      <p>Ausdauer, Zähigkeit, Gesundheit.</p>
+      <dl class="kv"><dt>Proben</dt><dd>Keine Fertigkeit. Reine CON-Probe z.B. für Trinkwettbewerb, langes Laufen</dd><dt>Rettungswurf</dt><dd>Gift, Krankheit, Kälte, <b>Konzentration halten</b></dd><dt>Sonst</dt><dd>Mehr <b>Trefferpunkte</b> pro Stufe, Luft anhalten</dd></dl></div>
+    <div class="card" style="border-top-color:#3f6aa3"><div class="ab-head"><span class="pill int">INT</span><h3>Intelligenz <span class="en">Intelligence</span></h3></div>
+      <p>Wissen, Logik, Gedächtnis, Schlussfolgern.</p>
+      <dl class="kv"><dt>Proben</dt><dd>Arkane Kunde, Geschichte, Nachforschungen, Naturkunde, Religion</dd><dt>Rettungswurf</dt><dd>Gegen Gedankenangriffe, Illusionen durchschauen</dd><dt>Zauber</dt><dd>Zauberattribut von <b>Magier</b> <span class="en">Wizard</span></dd></dl></div>
+    <div class="card" style="border-top-color:#7a52a0"><div class="ab-head"><span class="pill wis">WIS</span><h3>Weisheit <span class="en">Wisdom</span></h3></div>
+      <p>Wahrnehmung, Intuition, Bauchgefühl, Willenskraft.</p>
+      <dl class="kv"><dt>Proben</dt><dd>Wahrnehmung, Motiv erkennen, Heilkunde, Überlebenskunst, Mit Tieren umgehen</dd><dt>Rettungswurf</dt><dd>Gegen Bezaubern, Angst, Gedankenkontrolle</dd><dt>Zauber</dt><dd>Kleriker, Druide, Waldläufer</dd><dt>Sonst</dt><dd><b>Passive Wahrnehmung</b></dd></dl></div>
+    <div class="card" style="border-top-color:#a8406f"><div class="ab-head"><span class="pill cha">CHA</span><h3>Charisma <span class="en">Charisma</span></h3></div>
+      <p>Ausstrahlung, Überzeugungskraft, Selbstbewusstsein.</p>
+      <dl class="kv"><dt>Proben</dt><dd>Überzeugen, Täuschen, Einschüchtern, Auftreten</dd><dt>Rettungswurf</dt><dd>Gegen Verbannung, Besessenheit, Fluch</dd><dt>Zauber</dt><dd>Barde, Hexenmeister, Paladin, Zauberer</dd></dl></div>
+  </div>
+
+  <h2>Was bedeuten die +Werte? <span class="en">Modifiers</span></h2>
+  <div class="grid">
+    <div class="card wide">
+      <h3>Attributswert und Modifikator <span class="en">Score &amp; Modifier</span></h3>
+      <p>Jedes Attribut hat einen <b>Wert</b> (meist 8 bis 20) und einen <b>Modifikator</b> (die Zahl mit + oder −). Gewürfelt wird immer mit dem <b>Modifikator</b>. Den Wert selbst braucht man fast nie.</p>
+      <p>Formel: <code>(Wert − 10) ÷ 2</code>, abgerundet.</p>
+      <div class="modbar" id="modbar"></div>
+      <div class="tip"><b>Beispiel:</b> Auf dem Bogen steht bei Stärke „16 (+3)“. Bei einer Athletikprobe würfelt der Spieler einen W20 und rechnet +3 dazu. Eine 12 auf dem Würfel ergibt 15.</div>
+    </div>
+    <div class="card">
+      <h3>Übungsbonus <span class="en">Proficiency Bonus</span></h3>
+      <p>Ein Bonus für alles, worin der Charakter <b>geübt</b> ist: bestimmte Fertigkeiten, Rettungswürfe, Waffen, Werkzeuge, Zauber. Er steigt mit der Stufe.</p>
+      <div class="tbl"><table><thead><tr><th>Stufe</th><th class="n">Bonus</th></tr></thead><tbody>
+      <tr><td>1–4</td><td class="n">+2</td></tr><tr><td>5–8</td><td class="n">+3</td></tr><tr><td>9–12</td><td class="n">+4</td></tr><tr><td>13–16</td><td class="n">+5</td></tr><tr><td>17–20</td><td class="n">+6</td></tr></tbody></table></div>
+      <p>Auf dem Bogen erkennst du Übung am ausgefüllten Kreis neben der Fertigkeit. Die Zahl daneben ist schon fertig gerechnet (Modifikator + Übungsbonus).</p>
+    </div>
+    <div class="card">
+      <h3>Expertise <span class="en">Expertise</span></h3>
+      <p>Schurken, Barden und einige andere bekommen für ausgewählte Fertigkeiten den <b>doppelten</b> Übungsbonus. Ein Schurke der Stufe 1 mit DEX +3 und Expertise in Heimlichkeit hat also +7.</p>
+      <div class="tip"><b>Für dich:</b> Du musst nichts nachrechnen. Lass die Spieler die fertige Zahl vom Bogen nennen.</div>
+    </div>
+  </div>
+
+  <h2>Begriffe auf dem Bogen</h2>
+  <div class="grid">
+    <div class="card wide"><div class="tbl"><table>
+      <thead><tr><th>Deutsch</th><th>Englisch</th><th>Was es bedeutet</th></tr></thead><tbody>
+      <tr><td><b>Rüstungsklasse (RK)</b></td><td class="en">Armor Class (AC)</td><td>Wie schwer der Charakter zu treffen ist. Ein Angriff trifft, wenn das Ergebnis <b>gleich oder höher</b> als die RK ist.</td></tr>
+      <tr><td><b>Trefferpunkte (TP)</b></td><td class="en">Hit Points (HP)</td><td>Lebensenergie. Bei 0 TP fällt der Charakter bewusstlos um.</td></tr>
+      <tr><td><b>Temporäre TP</b></td><td class="en">Temporary Hit Points</td><td>Puffer, der zuerst Schaden schluckt. Stapeln sich nicht, man behält den höheren Wert. Verschwinden nach einer langen Rast.</td></tr>
+      <tr><td><b>Trefferpunktwürfel</b></td><td class="en">Hit Point Dice (Hit Dice)</td><td>Würfel, die man bei einer kurzen Rast ausgibt, um TP zurückzubekommen. Größe hängt von der Klasse ab (W6 bis W12).</td></tr>
+      <tr><td><b>Bewegungsrate</b></td><td class="en">Speed</td><td>Wie weit man pro Zug laufen darf. Meist 30 Fuß = 9 Meter = 6 Kästchen auf der Battlemap.</td></tr>
+      <tr><td><b>Initiative</b></td><td class="en">Initiative</td><td>DEX-Modifikator (plus Boni). Bestimmt die Reihenfolge im Kampf.</td></tr>
+      <tr><td><b>Übungsbonus</b></td><td class="en">Proficiency Bonus</td><td>Siehe oben. +2 auf Stufe 1.</td></tr>
+      <tr><td><b>Rettungswürfe</b></td><td class="en">Saving Throws</td><td>Sechs Werte, einer pro Attribut. Jede Klasse ist in zwei davon geübt.</td></tr>
+      <tr><td><b>Fertigkeiten</b></td><td class="en">Skills</td><td>18 Spezialisierungen der Attribute. Liste unter „Würfe &amp; Proben“.</td></tr>
+      <tr><td><b>Passive Wahrnehmung</b></td><td class="en">Passive Perception</td><td>10 + Wahrnehmungsbonus. Damit prüfst du heimlich, ob jemand etwas bemerkt, ohne würfeln zu lassen.</td></tr>
+      <tr><td><b>Angriffsbonus</b></td><td class="en">Attack Bonus / To Hit</td><td>Was beim Angriff auf den W20 kommt. Meist Attributsmodifikator + Übungsbonus.</td></tr>
+      <tr><td><b>Schaden</b></td><td class="en">Damage</td><td>Z.B. <code>1W8+3 Hieb</code>: einen W8 würfeln, 3 addieren, Schadensart Hieb <span class="en">Slashing</span>.</td></tr>
+      <tr><td><b>Zauber-SG</b></td><td class="en">Spell Save DC</td><td>Zahl, die Gegner bei einem Rettungswurf gegen den Zauber erreichen müssen. 8 + Zauberattribut + Übungsbonus.</td></tr>
+      <tr><td><b>Zauberangriffsbonus</b></td><td class="en">Spell Attack Bonus</td><td>Für Zauber mit Angriffswurf (z.B. Feuerpfeil). Zauberattribut + Übungsbonus.</td></tr>
+      <tr><td><b>Zauberplätze</b></td><td class="en">Spell Slots</td><td>„Energie“ für Zauber ab Grad 1. Kommen nach einer langen Rast zurück. Zaubertricks <span class="en">Cantrips</span> kosten nichts.</td></tr>
+      <tr><td><b>Heldenhafte Inspiration</b></td><td class="en">Heroic Inspiration</td><td>Ein Wiederholungswurf, den du für gutes Spiel vergeben kannst. Details unter „Würfe &amp; Proben“.</td></tr>
+      <tr><td><b>Gesinnung</b></td><td class="en">Alignment</td><td>Grobe moralische Haltung (z.B. chaotisch gut). Hat keine Regelwirkung.</td></tr>
+      <tr><td><b>Hintergrund</b></td><td class="en">Background</td><td>Vorgeschichte (z.B. Soldat, Gelehrter). Gibt 2024 Fertigkeiten, ein Talent und Attributserhöhungen.</td></tr>
+      <tr><td><b>Talent</b></td><td class="en">Feat</td><td>Besondere Fähigkeit, z.B. „Alarm“ oder „Glückspilz“ <span class="en">Lucky</span>.</td></tr>
+      <tr><td><b>Volk</b></td><td class="en">Species</td><td>Mensch, Elf, Zwerg, Halbling, Gnom, Ork, Tiefling, Drachenblütiger, Goliath.</td></tr>
+      <tr><td><b>Waffenmeisterschaft</b></td><td class="en">Weapon Mastery</td><td>Neu 2024: Kampfklassen nutzen einen Zusatzeffekt ihrer Waffe, z.B. <i>Umstoßen</i> <span class="en">Topple</span> oder <i>Verlangsamen</i> <span class="en">Slow</span>.</td></tr>
+    </tbody></table></div></div>
+  </div>
+
+  <h2>Würfel <span class="en">Dice</span></h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Schreibweise</h3>
+      <p>Im Deutschen W für Würfel, im Englischen d für <i>die</i>. <code>2W6+3</code> = <code>2d6+3</code> = zwei sechsseitige Würfel werfen und 3 addieren.</p>
+      <ul>
+        <li><b>W4, W6, W8, W10, W12:</b> Schaden und Heilung</li>
+        <li><b>W20:</b> Alles, was gelingen oder scheitern kann</li>
+        <li><b>W100</b> (zwei W10, einer für die Zehner): Zufallstabellen</li>
+        <li><b>W2, W3:</b> W4 oder W6 werfen und halbieren</li>
+      </ul>
+      <div class="tip"><b>Faustregel:</b> W20 entscheidet <i>ob</i> etwas klappt. Die anderen Würfel entscheiden <i>wie viel</i>.</div>
+    </div>
+    <div class="card">
+      <h3>Würfelbecher</h3>
+      <div class="dice-row" id="quickdice"></div>
+      <div class="dice-row"><input type="text" id="dice-expr" value="2d6+3" aria-label="Würfelausdruck" style="flex:1 1 120px"><button id="dice-go" class="primary">Würfeln</button></div>
+      <div class="dice-row"><button id="adv" class="d20">W20 mit Vorteil</button><button id="dis">W20 mit Nachteil</button></div>
+      <div class="roll-out" id="roll-out" aria-live="polite">Klicke einen Würfel an.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WÜRFE ===================== -->
+<section class="panel" id="p-wuerfe" data-tab="wuerfe" hidden>
+  <p class="lead">In der 2024er Fassung heißen alle W20-Würfe zusammen <b>W20-Test</b> <span class="en">D20 Test</span>. Es gibt drei Arten. Immer gilt: W20 + Modifikator, Ergebnis mit einer Zielzahl vergleichen, gleich oder höher gelingt.</p>
+
+  <h2>Welcher Wurf ist das?</h2>
+  <div class="grid">
+    <div class="card wide">
+      <div class="flow">
+        <div class="step"><div class="num">1</div><div><h3>Will jemand ein Ziel treffen? → Angriffswurf <span class="en">Attack Roll</span></h3><p>W20 + Angriffsbonus gegen die <b>RK</b> des Ziels. Waffen, Fäuste, Zauber mit „Zauberangriff“. Der <b>Angreifer</b> würfelt.</p></div></div>
+        <div class="step"><div class="num">2</div><div><h3>Passiert jemandem etwas, dem er ausweichen oder widerstehen will? → Rettungswurf <span class="en">Saving Throw</span></h3><p>W20 + Rettungswurfbonus gegen einen <b>SG</b>. Feuerball, Gift, Falle, Bezauberung. Das <b>Opfer</b> würfelt. Der SG kommt vom Zauber oder vom Monster.</p></div></div>
+        <div class="step"><div class="num">3</div><div><h3>Versucht jemand etwas mit unsicherem Ausgang? → Attributsprobe <span class="en">Ability Check</span></h3><p>W20 + passende Fertigkeit gegen einen <b>SG, den du festlegst</b>. Klettern, lügen, Schloss knacken, Spuren lesen. Gegen eine andere Kreatur: beide würfeln, höheres Ergebnis gewinnt (<b>vergleichende Probe</b> <span class="en">Contest</span>).</p></div></div>
+      </div>
+      <div class="warnbox"><b>Nicht würfeln lassen,</b> wenn etwas sicher klappt, sicher scheitert oder ein Fehlschlag nichts Interessantes bewirkt. Durch eine offene Tür gehen braucht keine Probe.</div>
+    </div>
+  </div>
+
+  <h2>Schwierigkeitsgrade <span class="en">Difficulty Class (DC)</span></h2>
+  <div class="grid">
+    <div class="card">
+      <div class="tbl"><table><thead><tr><th>Aufgabe</th><th class="n">SG</th></tr></thead><tbody>
+        <tr><td>Sehr leicht <span class="en">Very easy</span></td><td class="n">5</td></tr>
+        <tr><td>Leicht <span class="en">Easy</span></td><td class="n">10</td></tr>
+        <tr><td>Mittel <span class="en">Medium</span></td><td class="n">15</td></tr>
+        <tr><td>Schwer <span class="en">Hard</span></td><td class="n">20</td></tr>
+        <tr><td>Sehr schwer <span class="en">Very hard</span></td><td class="n">25</td></tr>
+        <tr><td>Fast unmöglich <span class="en">Nearly impossible</span></td><td class="n">30</td></tr>
+      </tbody></table></div>
+      <div class="tip"><b>Für den Anfang:</b> Nimm fast immer 10, 12 oder 15. Lege den SG fest, <i>bevor</i> gewürfelt wird.</div>
+    </div>
+    <div class="card">
+      <h3>Beispiele</h3>
+      <ul>
+        <li>Über einen 3-Meter-Graben springen: Athletik SG 10</li>
+        <li>Nasse Mauer hochklettern: Athletik SG 15</li>
+        <li>Wache anlügen, die eh gelangweilt ist: Täuschen SG 10</li>
+        <li>Einfaches Schloss knacken: Fingerfertigkeit mit Diebeswerkzeug SG 15</li>
+        <li>Frische Spuren im Schlamm: Überlebenskunst SG 10</li>
+        <li>Altes Wappen erkennen: Geschichte SG 15</li>
+        <li>Versteckte Falltür finden: Wahrnehmung oder Nachforschungen SG 15</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Vorteil und Nachteil <span class="en">Advantage &amp; Disadvantage</span></h2>
+  <div class="grid">
+    <div class="card">
+      <h3>So funktioniert es</h3>
+      <ul>
+        <li><b>Vorteil:</b> zwei W20 werfen, den <b>höheren</b> nehmen.</li>
+        <li><b>Nachteil:</b> zwei W20 werfen, den <b>niedrigeren</b> nehmen.</li>
+        <li>Mehrere Vorteile stapeln sich <b>nicht</b>. Einmal Vorteil ist das Maximum.</li>
+        <li>Hat jemand Vorteil <b>und</b> Nachteil, heben sie sich auf. Egal wie viele von jeder Sorte.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Typische Gründe</h3>
+      <ul>
+        <li><b>Vorteil:</b> Ziel liegt am Boden (Nahkampf), Ziel sieht den Angreifer nicht, Hilfe-Aktion, guter Plan oder passende Ausrüstung</li>
+        <li><b>Nachteil:</b> Fernkampf in Nahkampfreichweite eines Gegners, Ziel ist unsichtbar, schlechte Sicht, Vergiftet, Angreifer liegt am Boden</li>
+      </ul>
+      <div class="tip"><b>Dein Werkzeug:</b> Statt den SG zu ändern, kannst du einfach Vorteil oder Nachteil geben. Das geht schneller.</div>
+    </div>
+    <div class="card">
+      <h3>Heldenhafte Inspiration <span class="en">Heroic Inspiration</span></h3>
+      <p>Du vergibst sie für tolles Rollenspiel, mutige Ideen oder einen Lacher am Tisch. Der Spieler kann damit <b>einen beliebigen Würfel sofort neu werfen</b> und muss das neue Ergebnis nehmen. Man hat sie oder hat sie nicht, sie stapelt sich nicht. Menschen bekommen sie nach jeder langen Rast.</p>
+    </div>
+    <div class="card">
+      <h3>Natürliche 20 und 1</h3>
+      <p>Nur beim <b>Angriffswurf</b> zählen sie besonders: 20 trifft immer und ist ein kritischer Treffer, 1 verfehlt immer.</p>
+      <p>Bei Proben und Rettungswürfen ist eine 20 einfach 20 plus Bonus. Viele Gruppen spielen trotzdem gerne mit kleinen Extras bei einer 20. Das ist eine Hausregel, aber eine harmlose.</p>
+    </div>
+  </div>
+
+  <h2>Fertigkeiten <span class="en">Skills</span></h2>
+  <div class="grid">
+    <div class="card wide"><div class="tbl"><table>
+      <thead><tr><th>Deutsch</th><th>Englisch</th><th>Attribut</th><th>Wofür</th></tr></thead>
+      <tbody id="skills"></tbody></table></div></div>
+    <div class="card">
+      <h3>Passive Probe <span class="en">Passive Check</span></h3>
+      <p>Ohne Würfeln: <code>10 + Bonus</code>. Mit Vorteil +5, mit Nachteil −5.</p>
+      <p>Nutze die <b>passive Wahrnehmung</b>, um geheim zu prüfen, ob jemand einen Hinterhalt oder eine Falle bemerkt. So verrät die Frage „Würfelt mal Wahrnehmung“ nichts.</p>
+    </div>
+    <div class="card">
+      <h3>Gruppenprobe <span class="en">Group Check</span></h3>
+      <p>Alle würfeln. Schafft es <b>mindestens die Hälfte</b>, gelingt es der ganzen Gruppe. Gut für: gemeinsam schleichen, durch den Sumpf navigieren, eine Wand hoch.</p>
+    </div>
+    <div class="card">
+      <h3>Probe ohne Übung</h3>
+      <p>Jeder darf jede Fertigkeit versuchen. Ohne Übung zählt nur der Attributsmodifikator. Für Werkzeuge (Diebeswerkzeug, Kräuterkunde-Set) gilt dasselbe, sofern du es überhaupt zulässt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== KAMPF ===================== -->
+<section class="panel" id="p-kampf" data-tab="kampf" hidden>
+  <p class="lead">Ein Kampf läuft in <b>Runden</b> von je etwa 6 Sekunden. In jeder Runde ist jeder Beteiligte einmal am <b>Zug</b> <span class="en">Turn</span>.</p>
+
+  <h2>Ablauf</h2>
+  <div class="grid">
+    <div class="card wide">
+      <div class="flow">
+        <div class="step"><div class="num">1</div><div><h3>Überraschung klären <span class="en">Surprise</span></h3><p>Wer überrascht wird, würfelt die Initiative mit <b>Nachteil</b>. Mehr passiert in der 2024er Fassung nicht.</p></div></div>
+        <div class="step"><div class="num">2</div><div><h3>Initiative würfeln <span class="en">Initiative</span></h3><p>Alle werfen W20 + Initiativebonus (DEX). Gleiche Monster würfeln als Gruppe einmal. Reihenfolge von hoch nach niedrig notieren. Gleichstand: Spieler entscheiden untereinander, sonst entscheidest du.</p></div></div>
+        <div class="step"><div class="num">3</div><div><h3>Züge in Reihenfolge</h3><p>Jeder macht seinen Zug: Bewegung, eine Aktion, eventuell eine Bonusaktion.</p></div></div>
+        <div class="step"><div class="num">4</div><div><h3>Nächste Runde</h3><p>Wieder von oben, bis eine Seite tot ist, flieht, sich ergibt oder verhandelt wird.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Ein Zug</h2>
+  <div class="grid">
+    <div class="card"><h3>Bewegung <span class="en">Movement</span></h3><p>Bis zur Bewegungsrate. Darf aufgeteilt werden, also vor und nach der Aktion laufen. Schwieriges Gelände <span class="en">Difficult Terrain</span> kostet doppelt.</p></div>
+    <div class="card"><h3>Aktion <span class="en">Action</span></h3><p>Genau eine. Meist ein Angriff oder ein Zauber. Liste rechts unten.</p></div>
+    <div class="card"><h3>Bonusaktion <span class="en">Bonus Action</span></h3><p>Nur wenn eine Fähigkeit oder ein Zauber ausdrücklich „Bonusaktion“ sagt. Höchstens eine pro Zug. Keine Bonusaktion als Ersatz für eine Aktion.</p></div>
+    <div class="card"><h3>Reaktion <span class="en">Reaction</span></h3><p>Eine pro Runde, auch außerhalb des eigenen Zugs. Kommt am Anfang des eigenen Zugs zurück. Beispiele: Gelegenheitsangriff, der Zauber <i>Schild</i> <span class="en">Shield</span>.</p></div>
+    <div class="card"><h3>Kleinigkeiten <span class="en">Object Interaction</span></h3><p>Eine einfache Sache gratis: Tür öffnen, Schwert ziehen, Trank aufheben. Etwas sagen geht immer, solange es kurz ist.</p></div>
+    <div class="card"><h3>Gelegenheitsangriff <span class="en">Opportunity Attack</span></h3><p>Verlässt ein Gegner, den du sehen kannst, deine Nahkampfreichweite, darfst du ihn mit deiner Reaktion einmal angreifen. Nicht bei der Aktion <i>Rückzug</i> oder bei Teleport.</p></div>
+  </div>
+
+  <h2>Aktionen <span class="en">Actions</span></h2>
+  <div class="grid">
+    <div class="card wide"><div class="tbl"><table>
+      <thead><tr><th>Aktion</th><th>Englisch</th><th>Was passiert</th></tr></thead><tbody>
+      <tr><td><b>Angreifen</b></td><td class="en">Attack</td><td>Ein Angriff mit Waffe oder waffenlos. Mit <i>Extra-Angriff</i> <span class="en">Extra Attack</span> mehrere.</td></tr>
+      <tr><td><b>Spurt</b></td><td class="en">Dash</td><td>Zusätzliche Bewegung in Höhe der Bewegungsrate.</td></tr>
+      <tr><td><b>Rückzug</b></td><td class="en">Disengage</td><td>Bewegung löst diesen Zug keine Gelegenheitsangriffe aus.</td></tr>
+      <tr><td><b>Ausweichen</b></td><td class="en">Dodge</td><td>Bis zum eigenen nächsten Zug: Angriffe gegen dich mit Nachteil (wenn du den Angreifer siehst), DEX-Rettungswürfe mit Vorteil.</td></tr>
+      <tr><td><b>Helfen</b></td><td class="en">Help</td><td>Ein Verbündeter bekommt Vorteil auf seine nächste Probe (du musst die Fertigkeit beherrschen) oder auf seinen nächsten Angriff gegen einen Gegner in 1,5 m von dir. Auch: Sterbende stabilisieren.</td></tr>
+      <tr><td><b>Verstecken</b></td><td class="en">Hide</td><td>Heimlichkeitsprobe SG 15. Nur möglich, wenn man außer Sicht ist (Deckung oder Dunkelheit). Bei Erfolg bekommt man den Zustand <i>Unsichtbar</i>, bis man gefunden wird, laut ist oder angreift.</td></tr>
+      <tr><td><b>Beeinflussen</b></td><td class="en">Influence</td><td>Ein NPC soll etwas tun: Überzeugen, Täuschen, Einschüchtern, Auftreten oder Mit Tieren umgehen.</td></tr>
+      <tr><td><b>Magie</b></td><td class="en">Magic</td><td>Einen Zauber wirken, einen magischen Gegenstand benutzen oder eine magische Fähigkeit.</td></tr>
+      <tr><td><b>Vorbereiten</b></td><td class="en">Ready</td><td>„Wenn der Ork durch die Tür kommt, schieße ich.“ Auslöser festlegen. Tritt er ein, handelt man mit der Reaktion.</td></tr>
+      <tr><td><b>Suchen</b></td><td class="en">Search</td><td>WIS-Probe: Wahrnehmung, Motiv erkennen, Heilkunde oder Überlebenskunst.</td></tr>
+      <tr><td><b>Studieren</b></td><td class="en">Study</td><td>INT-Probe: Arkane Kunde, Geschichte, Nachforschungen, Naturkunde oder Religion.</td></tr>
+      <tr><td><b>Verwenden</b></td><td class="en">Utilize</td><td>Einen nichtmagischen Gegenstand benutzen, der eine Aktion braucht (Hebel ziehen, Heiltrank trinken).</td></tr>
+    </tbody></table></div>
+    <div class="tip"><b>Und sonst?</b> Spieler dürfen alles versuchen, was nicht auf der Liste steht: Kronleuchter abschneiden, Sand werfen. Entscheide, welche Probe passt, und lass würfeln.</div></div>
+  </div>
+
+  <h2>Angriff und Schaden</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Angriff Schritt für Schritt</h3>
+      <ol>
+        <li>Spieler sagt Ziel und Waffe an.</li>
+        <li>W20 + Angriffsbonus.</li>
+        <li>Ergebnis ≥ RK des Ziels: Treffer.</li>
+        <li>Schadenswürfel + Attributsmodifikator.</li>
+        <li>Du ziehst den Schaden von den TP des Monsters ab.</li>
+      </ol>
+      <div class="tip"><b>Tipp:</b> Sag den Spielern die RK nicht direkt. Frag „Was hast du?“ und antworte „trifft“ oder „verfehlt“.</div>
+    </div>
+    <div class="card">
+      <h3>Kritischer Treffer <span class="en">Critical Hit</span></h3>
+      <p>Natürliche 20 beim Angriff. <b>Alle Schadenswürfel doppelt werfen</b>, den Modifikator nur einmal addieren.</p>
+      <p><code>1W8+3</code> wird zu <code>2W8+3</code>. Auch Extra-Würfel wie Hinterhältiger Angriff verdoppeln sich.</p>
+    </div>
+    <div class="card">
+      <h3>Nah- und Fernkampf</h3>
+      <ul>
+        <li>Nahkampf: Reichweite meist 1,5 m <span class="en">5 ft</span>, also das Nachbarfeld.</li>
+        <li>Fernkampf mit einem Gegner direkt daneben: <b>Nachteil</b>.</li>
+        <li>Fernkampf über die normale bis zur langen Reichweite: <b>Nachteil</b>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Zwei Waffen <span class="en">Light Property</span></h3>
+      <p>Wer mit einer <i>leichten</i> Waffe angreift, darf als Bonusaktion mit einer anderen leichten Waffe einmal zuschlagen. Bei diesem Zusatzangriff wird der Attributsmodifikator <b>nicht</b> zum Schaden addiert (außer er ist negativ).</p>
+    </div>
+    <div class="card">
+      <h3>Deckung <span class="en">Cover</span></h3>
+      <div class="tbl"><table><thead><tr><th>Art</th><th>Effekt</th></tr></thead><tbody>
+        <tr><td>Halbe <span class="en">Half</span></td><td>+2 RK und DEX-Rettungswürfe (niedrige Mauer, anderer Kämpfer)</td></tr>
+        <tr><td>Dreiviertel <span class="en">Three-Quarters</span></td><td>+5 RK und DEX-Rettungswürfe (Schießscharte, dicker Baum)</td></tr>
+        <tr><td>Volle <span class="en">Total</span></td><td>Kann nicht direkt anvisiert werden</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>Schadensarten <span class="en">Damage Types</span></h3>
+      <p>Hieb <span class="en">Slashing</span>, Stich <span class="en">Piercing</span>, Wucht <span class="en">Bludgeoning</span>, Feuer <span class="en">Fire</span>, Kälte <span class="en">Cold</span>, Blitz <span class="en">Lightning</span>, Donner <span class="en">Thunder</span>, Säure <span class="en">Acid</span>, Gift <span class="en">Poison</span>, Gleißend <span class="en">Radiant</span>, Nekrotisch <span class="en">Necrotic</span>, Energie <span class="en">Force</span>, Psychisch <span class="en">Psychic</span>.</p>
+      <ul>
+        <li><b>Resistenz</b> <span class="en">Resistance</span>: halber Schaden, abgerundet</li>
+        <li><b>Anfälligkeit</b> <span class="en">Vulnerability</span>: doppelter Schaden</li>
+        <li><b>Immunität</b> <span class="en">Immunity</span>: kein Schaden</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Blutend <span class="en">Bloodied</span></h3>
+      <p>Neu als Begriff: Eine Kreatur mit <b>der Hälfte ihrer TP oder weniger</b> ist „blutend“. Manche Fähigkeiten reagieren darauf.</p>
+      <div class="tip"><b>Dein Signal:</b> Sag es laut, wenn ein Monster blutend ist („Der Oger schwankt, Blut läuft ihm über das Gesicht“). Ein guter Moment für Monster, zu fliehen.</div>
+    </div>
+    <div class="card">
+      <h3>Waffenlos: Schlag, Packen, Stoßen <span class="en">Unarmed Strike</span></h3>
+      <p>Ersetzt einen Angriff. Drei Möglichkeiten:</p>
+      <ul>
+        <li><b>Schaden:</b> Angriffswurf, 1 + STR-Mod Wuchtschaden.</li>
+        <li><b>Packen</b> <span class="en">Grapple</span>: Ziel macht STR- oder DEX-Rettungswurf (es wählt) gegen <code>8 + STR-Mod + Übungsbonus</code>. Scheitert es, ist es <i>Gepackt</i>. Braucht eine freie Hand, Ziel höchstens eine Größe größer.</li>
+        <li><b>Stoßen</b> <span class="en">Shove</span>: Gleicher Rettungswurf. Bei Fehlschlag 1,5 m weg oder <i>Liegend</i>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Die Gegner sind dran: So greifst du als DM an</h2>
+  <div class="grid">
+    <div class="card wide">
+      <div class="flow">
+        <div class="step"><div class="num">1</div><div><h3>Ziel wählen und ansagen</h3><p>„Der Goblin springt auf Mira zu und schwingt seinen Krummsäbel.“</p></div></div>
+        <div class="step"><div class="num">2</div><div><h3>Du würfelst: W20 + Angriffsbonus des Monsters</h3><p>Der Bonus steht im Statblock, z.B. <code>+4</code>. Würfelst du eine 11, ist das Ergebnis 15.</p></div></div>
+        <div class="step"><div class="num">3</div><div><h3>Mit der RK des Spielers vergleichen</h3><p>Ergebnis <b>gleich oder höher</b> als die RK des Charakters: Treffer. Die RK steht auf dem Charakterbogen. Am einfachsten fragst du: „Trifft eine 15?“</p></div></div>
+        <div class="step"><div class="num">4</div><div><h3>Schaden ansagen</h3><p>Schadenswürfel aus dem Statblock werfen oder einfach den Durchschnittswert nehmen. Der Spieler zieht den Schaden selbst von seinen TP ab.</p></div></div>
+      </div>
+      <div class="tip"><b>Kurz gesagt:</b> Bei Monsterangriffen würfelst <i>du</i>. Bei Monsterzaubern und -fähigkeiten mit Rettungswurf würfelt <i>der Spieler</i>.</div>
+    </div>
+    <div class="card">
+      <h3>Wo steht das im Statblock?</h3>
+      <p>Ein Angriff sieht in den 2024er Statblöcken so aus:</p>
+      <p class="mono" style="background:var(--surface-2);padding:8px 10px;border-radius:8px">Scimitar. Melee Attack Roll: +4, reach 5 ft. Hit: 5 (1d6 + 2) Slashing damage.</p>
+      <ul>
+        <li><b>+4</b>: Angriffsbonus, kommt auf den W20</li>
+        <li><b>reach 5 ft</b>: Reichweite 1,5 m, also Nachbarfeld</li>
+        <li><b>5</b>: Durchschnittsschaden. Den darfst du einfach nehmen</li>
+        <li><b>(1d6 + 2)</b>: oder du würfelst ihn</li>
+      </ul>
+      <p>In älteren Statblöcken steht stattdessen <span class="en">Melee Weapon Attack: +4 to hit</span>. Gleiche Bedeutung.</p>
+    </div>
+    <div class="card">
+      <h3>Rettungswurf statt Angriff</h3>
+      <p>Manche Fähigkeiten haben keinen Angriffswurf, sondern einen SG:</p>
+      <p class="mono" style="background:var(--surface-2);padding:8px 10px;border-radius:8px">Dexterity Saving Throw: DC 12. Failure: 10 (3d6) Fire damage. Success: Half damage.</p>
+      <ol>
+        <li>Du sagst: „Mach einen Geschicklichkeits-Rettungswurf.“</li>
+        <li>Der Spieler würfelt W20 + seinen DEX-Rettungswurf.</li>
+        <li>Ergebnis 12 oder mehr: geschafft, meist halber oder kein Schaden.</li>
+      </ol>
+      <p>Den SG musst du nicht verraten, du kannst aber.</p>
+    </div>
+    <div class="card">
+      <h3>Mehrfachangriff <span class="en">Multiattack</span></h3>
+      <p>Steht „Multiattack: The ogre makes two attacks“, würfelt das Monster in seinem Zug zweimal einen Angriff. Jeder Angriff wird einzeln gegen die RK geprüft und darf ein anderes Ziel haben.</p>
+    </div>
+    <div class="card">
+      <h3>Gleiche Regeln wie für Spieler</h3>
+      <ul>
+        <li>Natürliche 20: kritischer Treffer, Schadenswürfel doppelt.</li>
+        <li>Natürliche 1: verfehlt immer.</li>
+        <li>Vorteil und Nachteil gelten genauso (z.B. Spieler liegt am Boden, Spieler weicht aus).</li>
+        <li>Deckung erhöht die RK des Spielers um +2 oder +5.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Offen oder verdeckt würfeln?</h3>
+      <p><b>Offen</b> würfeln ist spannend und zeigt, dass du fair bist. <b>Verdeckt</b> (hinter einem Schirm oder Buch) lässt dir Spielraum, einen Kampf zu entschärfen. Beides ist okay. Viele DMs würfeln verdeckt und sagen das Ergebnis trotzdem ehrlich an.</p>
+      <div class="tip"><b>Wichtig:</b> Sag die Gesamtzahl an („17“), bevor du „trifft“ sagst. Manche Spieler haben Reaktionen wie den Zauber <i>Schild</i>, die genau dann eingesetzt werden.</div>
+    </div>
+    <div class="card">
+      <h3>Zeit sparen</h3>
+      <ul>
+        <li>Schreib dir vor der Sitzung die RK aller Charaktere auf einen Zettel.</li>
+        <li>Angriffs- und Schadenswürfel gleichzeitig werfen.</li>
+        <li>Durchschnittsschaden statt Würfeln.</li>
+        <li>Bei mehreren gleichen Monstern alle Angriffe auf einmal werfen, verschiedenfarbige Würfel pro Monster.</li>
+        <li>Monster-TP auf einem Zettel runterzählen, nicht im Kopf.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Wen greifen Monster an?</h3>
+      <ul>
+        <li><b>Tiere und dumme Monster:</b> das Nächste oder das, was zuletzt wehgetan hat.</li>
+        <li><b>Schlaue Gegner:</b> den Zauberer hinten, den Heiler, wer am schwächsten aussieht.</li>
+        <li>Bewusstlose Charaktere gezielt weiter anzugreifen ist sehr hart. Mach das nur, wenn es wirklich zum Monster passt.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Kein Statblock zur Hand?</h3>
+      <p>Faustwerte für spontane Gegner:</p>
+      <div class="tbl"><table><thead><tr><th>Gegner</th><th class="n">Angriff</th><th class="n">SG</th><th>Schaden</th></tr></thead><tbody>
+        <tr><td>Schwach (Bandit)</td><td class="n">+3</td><td class="n">11</td><td>1W6+1</td></tr>
+        <tr><td>Normal (Soldat)</td><td class="n">+4</td><td class="n">12</td><td>1W8+2</td></tr>
+        <tr><td>Stark (Oger)</td><td class="n">+6</td><td class="n">14</td><td>2W8+4</td></tr>
+        <tr><td>Boss für Stufe 3–5</td><td class="n">+7</td><td class="n">15</td><td>2× 2W6+4</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>Monster-Angriffswürfler</h3>
+      <div class="enc-in">
+        <label for="ma-bonus">Angriffsbonus<input type="number" id="ma-bonus" value="4" style="width:5rem"></label>
+        <label for="ma-ac">RK des Ziels<input type="number" id="ma-ac" value="14" style="width:5rem"></label>
+        <label for="ma-dmg">Schaden<input type="text" id="ma-dmg" value="1d6+2" style="width:7rem"></label>
+        <label for="ma-mode">Wurf<select id="ma-mode"><option value="n">Normal</option><option value="a">Vorteil</option><option value="d">Nachteil</option></select></label>
+      </div>
+      <div class="dice-row" id="ma-targets"><span style="font-size:.85rem;color:var(--muted);align-self:center">Ziel:</span><button data-ac="21">Ulrik (RK 21)</button><button data-ac="14">Jakobus (RK 14)</button><button data-ac="16">Wayne (RK 16)</button><button id="ma-rg" data-ac="" hidden>Ranger</button></div>
+      <div class="dice-row"><button class="d20" id="ma-go">Angreifen</button></div>
+      <div class="roll-out" id="ma-out" aria-live="polite">Werte eintragen und angreifen.</div>
+    </div>
+  </div>
+
+  <h2>Bei 0 Trefferpunkten <span class="en">Dropping to 0 HP</span></h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Bewusstlos und Todesrettungswürfe <span class="en">Death Saving Throws</span></h3>
+      <p>Ein Charakter bei 0 TP ist <i>Bewusstlos</i>. Am Anfang jedes seiner Züge wirft er einen W20 ohne Bonus:</p>
+      <ul>
+        <li><b>10 oder mehr:</b> Erfolg. <b>9 oder weniger:</b> Fehlschlag.</li>
+        <li><b>3 Erfolge:</b> stabil, bleibt aber bewusstlos. Nach 1W4 Stunden 1 TP.</li>
+        <li><b>3 Fehlschläge:</b> tot.</li>
+        <li><b>Natürliche 20:</b> sofort 1 TP und wach.</li>
+        <li><b>Natürliche 1:</b> zählt als zwei Fehlschläge.</li>
+        <li>Schaden bei 0 TP: ein Fehlschlag, kritischer Treffer zwei.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Retten</h3>
+      <ul>
+        <li><b>Jede Heilung</b> weckt sofort auf (auch 1 TP). Die Zähler werden zurückgesetzt.</li>
+        <li><b>Stabilisieren:</b> Aktion <i>Helfen</i> mit Heilkunde-Probe SG 10 <span class="en">Medicine</span>.</li>
+      </ul>
+      <div class="warnbox"><b>Sofortiger Tod:</b> Ist der Schaden, der nach dem Erreichen von 0 TP übrig bleibt, mindestens so groß wie die maximalen TP, stirbt der Charakter direkt. Kommt auf Stufe 1 öfter vor, als man denkt.</div>
+    </div>
+    <div class="card">
+      <h3>Monster und NPCs</h3>
+      <p>Monster sterben bei 0 TP einfach, ohne Todesrettungswürfe. Wer im Nahkampf einen Gegner auf 0 bringt, darf stattdessen sagen, dass er ihn nur bewusstlos schlägt.</p>
+    </div>
+    <div class="card">
+      <h3>Konzentration <span class="en">Concentration</span></h3>
+      <p>Viele Zauber halten nur, solange der Zauberer sich konzentriert. Nur ein Konzentrationszauber gleichzeitig.</p>
+      <p>Nimmt er Schaden: CON-Rettungswurf gegen <b>SG 10 oder halben Schaden</b>, je nachdem was höher ist (höchstens 30). Scheitert er, endet der Zauber. Auch bei <i>Kampfunfähig</i> oder Tod.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ZUSTÄNDE ===================== -->
+<section class="panel" id="p-zustaende" data-tab="zustaende" hidden>
+  <p class="lead">Zustände <span class="en">Conditions</span> sind die Effekte, die du im Kampf am häufigsten nachschlagen wirst. Mehrfach den gleichen Zustand zu haben zählt nur einmal, außer bei Erschöpfung.</p>
+  <div class="grid" id="conditions"></div>
+</section>
+
+<!-- ===================== WELT ===================== -->
+<section class="panel" id="p-welt" data-tab="welt" hidden>
+  <h2>Rasten <span class="en">Resting</span></h2>
+  <div class="grid">
+    <div class="card"><h3>Kurze Rast <span class="en">Short Rest</span></h3>
+      <ul><li>Dauer: <b>1 Stunde</b> Ausruhen, Essen, Wunden verbinden.</li>
+      <li>Man darf Trefferpunktwürfel ausgeben: Würfel werfen + CON-Mod, so viele TP zurück.</li>
+      <li>Manche Fähigkeiten laden sich auf (z.B. Hexenmeister-Zauberplätze, Kämpfer „Durchatmen“).</li></ul></div>
+    <div class="card"><h3>Lange Rast <span class="en">Long Rest</span></h3>
+      <ul><li>Dauer: <b>8 Stunden</b>, davon mindestens 6 Schlaf.</li>
+      <li>Alle TP und alle Trefferpunktwürfel zurück, Zauberplätze zurück, eine Stufe Erschöpfung weg.</li>
+      <li>Höchstens eine lange Rast in 24 Stunden.</li>
+      <li>Unterbrochen durch Initiative, einen Zauber (kein Zaubertrick), Schaden oder 1 Stunde Wandern.</li></ul></div>
+    <div class="card"><h3>Für dich als DM</h3><p>Rasten sind dein Hebel für Spannung. Wenn die Gruppe nach jedem Kampf lang rasten kann, sind Kämpfe kaum gefährlich. Ein Zeitdruck oder ein Patrouillenwurf in der Nacht hilft.</p></div>
+  </div>
+
+  <h2>Magie <span class="en">Spellcasting</span></h2>
+  <div class="grid">
+    <div class="card"><h3>Die zwei Zahlen</h3>
+      <ul><li><b>Zauber-SG</b> <span class="en">Spell Save DC</span> = 8 + Zauberattribut-Mod + Übungsbonus</li>
+      <li><b>Zauberangriff</b> <span class="en">Spell Attack</span> = Zauberattribut-Mod + Übungsbonus</li></ul>
+      <p>Im Zaubertext steht, welches von beiden gilt: „Rettungswurf“ oder „Zauberangriff“.</p></div>
+    <div class="card"><h3>Grade und Plätze <span class="en">Levels &amp; Slots</span></h3>
+      <ul><li>Zaubertricks (Grad 0) gehen unbegrenzt.</li>
+      <li>Zauber ab Grad 1 verbrauchen einen Zauberplatz mindestens dieses Grades.</li>
+      <li><b>Höher wirken</b> <span class="en">Upcasting</span>: Mit höherem Platz wird der Zauber oft stärker.</li>
+      <li>Pro Zug darf nur <b>ein</b> Zauberplatz ausgegeben werden.</li></ul></div>
+    <div class="card"><h3>Komponenten <span class="en">Components</span></h3>
+      <ul><li><b>V</b> verbal: laut sprechen. Geht nicht geknebelt oder in Stille.</li>
+      <li><b>G</b> gestisch <span class="en">S, Somatic</span>: eine freie Hand.</li>
+      <li><b>M</b> Material: Fokus oder Komponentenbeutel. Hat das Material einen Goldpreis, muss es wirklich da sein.</li></ul></div>
+    <div class="card"><h3>Ritual <span class="en">Ritual</span></h3><p>Zauber mit dem Tag „Ritual“ können ohne Zauberplatz gewirkt werden, dauern dann aber 10 Minuten länger.</p></div>
+  </div>
+
+  <h2>Umgebung</h2>
+  <div class="grid">
+    <div class="card"><h3>Sicht und Licht</h3>
+      <ul><li><b>Leicht verdeckt</b> <span class="en">Lightly Obscured</span> (Dämmerlicht, leichter Nebel): Nachteil auf Wahrnehmung mit den Augen.</li>
+      <li><b>Stark verdeckt</b> <span class="en">Heavily Obscured</span> (Dunkelheit, dichter Nebel): praktisch <i>Blind</i>.</li>
+      <li><b>Dunkelsicht</b> <span class="en">Darkvision</span>: Dämmerlicht wie hell, Dunkelheit wie Dämmerlicht, ohne Farben. Viele Völker haben das.</li></ul></div>
+    <div class="card"><h3>Fallen <span class="en">Falling</span></h3><p>1W6 Wuchtschaden pro 3 m (10 ft), höchstens 20W6. Man landet <i>Liegend</i>, wenn man den Schaden nicht irgendwie verhindert.</p></div>
+    <div class="card"><h3>Ersticken <span class="en">Suffocation</span></h3><p>Luft anhalten: 1 + CON-Mod Minuten (mindestens 30 Sekunden). Danach am Ende jedes eigenen Zuges eine Stufe Erschöpfung.</p></div>
+    <div class="card"><h3>Reisetempo <span class="en">Travel Pace</span></h3>
+      <div class="tbl"><table><thead><tr><th>Tempo</th><th>pro Tag</th><th>Effekt</th></tr></thead><tbody>
+      <tr><td>Schnell</td><td>ca. 48 km</td><td>Nachteil auf Wahrnehmung</td></tr>
+      <tr><td>Normal</td><td>ca. 38 km</td><td>–</td></tr>
+      <tr><td>Langsam</td><td>ca. 29 km</td><td>Heimlich möglich, Vorteil beim Spurenlesen und Umschauen</td></tr></tbody></table></div></div>
+    <div class="card"><h3>Umrechnung Fuß und Meter</h3><p>5 ft = 1,5 m = 1 Kästchen. 30 ft = 9 m = 6 Kästchen. 60 ft = 18 m. 120 ft = 36 m. Diagonal zählt jedes Kästchen ebenfalls als 5 ft.</p></div>
+  </div>
+
+  <h2>Leiten am Tisch</h2>
+  <div class="grid">
+    <div class="card"><h3>Wenn du eine Regel nicht weißt</h3><ol><li>Kurz entscheiden, was sich fair anfühlt.</li><li>Im Zweifel: W20-Probe gegen SG 10 bis 15, oder Vorteil/Nachteil.</li><li>Weiterspielen und nach der Sitzung nachschlagen.</li></ol><p>Spielfluss ist wichtiger als Regelgenauigkeit.</p></div>
+    <div class="card"><h3>Ja, und / Ja, aber</h3><p>Wenn ein Spieler etwas Kreatives vorschlägt, sag lieber „Ja, aber du brauchst eine Akrobatik-Probe“ als „Nein“. Ein Fehlschlag sollte die Geschichte weitertreiben, nicht anhalten.</p></div>
+    <div class="card"><h3>Kampf beschreiben</h3><p>Statt „Du machst 7 Schaden“: „Deine Axt reißt ihm die Schulter auf, er taumelt zurück.“ Lass Spieler den Todesstoß beschreiben: „Wie willst du das tun?“</p></div>
+    <div class="card"><h3>Kampf läuft aus dem Ruder?</h3><ul><li>Monster fliehen oder ergeben sich.</li><li>TP still anpassen, die Spieler sehen sie ja nicht.</li><li>Verstärkung kommt oder bleibt aus.</li><li>Gegner nehmen lieber Geiseln, statt zu töten.</li></ul></div>
+  </div>
+</section>
+
+<!-- ===================== BEGEGNUNG ===================== -->
+<section class="panel" id="p-begegnung" data-tab="begegnung" hidden>
+  <p class="lead">So schätzt du ab, wie schwer ein Kampf wird. Nach den 2024er Regeln addierst du einfach die EP der Monster, ohne Multiplikator, und vergleichst mit dem Budget der Gruppe.</p>
+  <div class="grid">
+    <div class="card wide">
+      <h3>Begegnungsrechner <span class="en">Encounter Budget</span></h3>
+      <div class="enc-in">
+        <label for="enc-n">Anzahl Charaktere<input type="number" id="enc-n" min="1" max="10" value="4" style="width:6rem"></label>
+        <label for="enc-l">Stufe der Gruppe<input type="number" id="enc-l" min="1" max="20" value="5" style="width:6rem"></label>
+      </div>
+      <div class="budget" id="budget"></div>
+      <h3 style="margin-top:6px">Monster in diesem Kampf</h3>
+      <div class="mon-list" id="mon-list"></div>
+      <div class="dice-row"><button id="mon-add">Monster hinzufügen</button></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+    <div class="card">
+      <h3>Schwierigkeit lesen</h3>
+      <ul>
+        <li><b>Niedrig</b> <span class="en">Low</span>: kaum Risiko, verbraucht ein paar Ressourcen.</li>
+        <li><b>Mittel</b> <span class="en">Moderate</span>: es kann jemand umfallen.</li>
+        <li><b>Hoch</b> <span class="en">High</span>: echte Gefahr, jemand könnte sterben.</li>
+      </ul>
+      <div class="tip"><b>Auf Stufe 1–2</b> sind die Charaktere sehr zerbrechlich. Bleib dort lieber bei niedrig bis mittel.</div>
+    </div>
+    <div class="card">
+      <h3>Herausforderungsgrad <span class="en">Challenge Rating (CR)</span></h3>
+      <p>Steht bei jedem Monster. Grob: ein Monster mit HG gleich der Gruppenstufe ist für vier Charaktere ein ordentlicher Kampf. Viele schwache Monster sind gefährlicher, als die Zahl sagt, weil sie öfter angreifen.</p>
+    </div>
+    <div class="card">
+      <h3>EP pro Herausforderungsgrad</h3>
+      <div class="tbl"><table><thead><tr><th>HG</th><th class="n">EP</th><th>HG</th><th class="n">EP</th></tr></thead><tbody id="crtable"></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHARAKTERE ===================== -->
+<section class="panel" id="p-charaktere" data-tab="charaktere" hidden>
+  <p class="lead">Eure Gruppe auf Stufe 5. Oben die Zahlen, die du im Kampf ständig brauchst, darunter pro Charakter: was er in seinem Zug tun kann, wie seine Zauber funktionieren und welche Proben gut zu ihm passen.</p>
+
+  <h2>Gruppenübersicht</h2>
+  <div class="grid">
+    <div class="card wide"><div class="tbl"><table>
+      <thead><tr><th>Charakter</th><th class="n">RK</th><th class="n">TP</th><th class="n">Passive Wahrn.</th><th class="n">Zauber-SG</th><th>Initiative</th><th>Sicht</th></tr></thead>
+      <tbody>
+        <tr><td><b>Ulrik Heldenhammer</b><br><span class="en">Paladin 5 · Oath of Conquest</span></td><td class="n">21</td><td class="n">44</td><td class="n">15</td><td class="n">15</td><td>−1</td><td>normal</td></tr>
+        <tr><td><b>Jakobus Tenacdios</b><br><span class="en">Bard 5 · College of Lore</span></td><td class="n">14</td><td class="n">38</td><td class="n">12</td><td class="n">14</td><td>+3</td><td>normal</td></tr>
+        <tr><td><b>Wayne Wummsbart</b><br><span class="en">Fighter 5 · Champion</span></td><td class="n">16</td><td class="n">44</td><td class="n">10</td><td class="n">–</td><td>+2 mit Vorteil</td><td>Dunkelsicht 36 m</td></tr>
+        <tr id="rg-row"></tr>
+      </tbody></table></div>
+      <div class="jump"><button data-jump="ch-ulrik">Zu Ulrik</button><button data-jump="ch-jakobus">Zu Jakobus</button><button data-jump="ch-wayne">Zu Wayne</button><button data-jump="ch-ranger">Zum Ranger</button><button data-jump="ch-gruppe">DM-Hinweise zur Gruppe</button></div>
+    </div>
+    <div class="card">
+      <h3>Begegnungsbudget für euch</h3>
+      <p>4 Charaktere auf Stufe 5:</p>
+      <ul><li>Niedrig: <b>2.000 EP</b></li><li>Mittel: <b>3.000 EP</b></li><li>Hoch: <b>4.400 EP</b></li></ul>
+      <p>Beispiel für „mittel“: ein Monster mit HG 5 (1.800 EP) und vier Helfer mit HG 1 (je 200 EP) = 2.600 EP.</p>
+    </div>
+    <div class="card">
+      <h3>Regelversionen gemischt</h3>
+      <p><b>Wayne</b> ist nach 2024 gebaut, <b>Jakobus</b> nach 2014. <b>Ulrik</b> hat beides auf dem Bogen, z.B. „Divine Smite“ als Klassenmerkmal (2014) <i>und</i> als Zauber (2024).</p>
+      <div class="tip"><b>Empfehlung:</b> Jeder spielt seinen Bogen so, wie er ist. Nur bei Ulrik einmal festlegen: Divine Smite nach 2024 (Bonusaktion, höchstens einmal pro Zug). Das ist fairer und spart Diskussionen.</div>
+    </div>
+  </div>
+
+  <!-- ULRIK -->
+  <div class="char-head" id="ch-ulrik">
+    <h2>Ulrik Heldenhammer</h2>
+    <p class="who">Paladin 5, Eid der Eroberung <span class="en">Oath of Conquest</span> · Mensch (Variante) · Soldat · Spieler: Em1n3mgod</p>
+    <div class="chips"><span class="chip hot">RK <b>21</b></span><span class="chip">Schienenpanzer + Schild +1</span><span class="chip">TP <b>44</b></span><span class="chip">Bewegung <b>9 m</b></span><span class="chip">Init <b>−1</b></span><span class="chip">STR <b>+5</b></span><span class="chip">DEX <b>−1</b></span><span class="chip">CON <b>+2</b></span><span class="chip">INT <b>+0</b></span><span class="chip">WIS <b>+2</b></span><span class="chip">CHA <b>+4</b></span><span class="chip">RW geübt: WIS <b>+5</b>, CHA <b>+7</b></span><span class="chip">Immun gegen Krankheiten</span></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>In seinem Zug</h3>
+      <dl class="kv">
+        <dt>Aktion</dt><dd><b>Angreifen:</b> zwei Angriffe <span class="en">Extra Attack</span> mit dem Maul +1: <code>+9</code>, <code>2W6+6</code> Wucht.<br>Oder einen Zauber wirken, Kanäle der Göttlichkeit, Handauflegen.</dd>
+        <dt>Bonusaktion</dt><dd>Divine Smite oder ein anderer „Smite“-Zauber nach einem Treffer, Shield of Faith, Divine Favor, Compelled Duel, Spiritual Weapon.</dd>
+        <dt>Reaktion</dt><dd>Gelegenheitsangriff.</dd>
+      </dl>
+      <div class="tip"><b>Nur eine Bonusaktion pro Zug.</b> Ulrik muss sich jede Runde entscheiden: Smite <i>oder</i> Spiritual Weapon <i>oder</i> ein Buff.</div>
+    </div>
+    <div class="card">
+      <h3>Waffenmeisterschaft: Umstoßen <span class="en">Topple</span></h3>
+      <p>Trifft Ulrik mit dem Maul, muss das Ziel einen CON-Rettungswurf gegen <b>SG 16</b> schaffen, sonst ist es <i>Liegend</i>.</p>
+      <p>Sein zweiter Angriff hat dann <b>Vorteil</b>, weil das Ziel am Boden liegt. Das wird er oft so machen.</p>
+    </div>
+    <div class="card">
+      <h3>Divine Smite <span class="en">Göttliches Niederstrecken</span></h3>
+      <p>Nach einem Treffer im Nahkampf gibt Ulrik einen Zauberplatz aus: <b>+2W8 gleisend</b>. Pro Grad über 1 ein W8 mehr. Gegen Untote und Unholde noch +1W8.</p>
+      <p>Bei einem kritischen Treffer werden auch diese Würfel verdoppelt. Ein kritischer Smite mit Platz 2 macht schnell 40+ Schaden.</p>
+      <p class="slots">Zauberplätze: Grad 1 ○○○○ · Grad 2 ○○</p>
+    </div>
+    <div class="card">
+      <h3>Besondere Fähigkeiten</h3>
+      <ul>
+        <li><b>Handauflegen</b> <span class="en">Lay on Hands</span>: Vorrat von 25 TP pro langer Rast. Berührung heilt beliebig viele Punkte daraus. 5 Punkte heilen stattdessen Gift oder Krankheit. Laut Bogen eine Aktion (2024: Bonusaktion).</li>
+        <li><b>Göttliches Gespür</b> <span class="en">Divine Sense</span>: Aktion, 5× pro langer Rast. Spürt Himmlische, Unholde und Untote in 18 m.</li>
+        <li><b>Kanalisieren: Erobernde Präsenz</b> <span class="en">Conquering Presence</span>: Aktion. Gewählte Kreaturen in 9 m machen WIS-RW SG 15 oder sind 1 Minute <i>Verängstigt</i>. Wiederholen den Wurf am Ende jedes Zugs.</li>
+        <li><b>Kanalisieren: Geführter Schlag</b> <span class="en">Guided Strike</span>: Nach einem Angriffswurf +10 auf den Wurf, bevor du sagst, ob er trifft.</li>
+        <li>Kanalisieren geht <b>1× pro kurzer Rast</b>, also nur eine der beiden Optionen.</li>
+        <li><b>Kampfstil Verteidigung</b>: +1 RK, ist in der 21 schon drin (Schienenpanzer 17, Schild +1 gibt +3, Verteidigung +1).</li>
+      </ul>
+    </div>
+    <div class="card wide">
+      <h3>Zauber <span class="en">Spells</span> · SG 15 · Zauberangriff +7</h3>
+      <p>Ulrik hat eine lange Liste auf dem Bogen, kann aber pro Tag nur <b>6</b> davon vorbereiten. Frag ihn am Anfang der Sitzung, welche. Immer vorbereitet sind seine Eidzauber: Armor of Agathys, Command, Hold Person, Spiritual Weapon.</p>
+      <div class="grid" style="margin-top:6px">
+        <div class="spells">
+          <div class="spell"><div><b>Searing Smite</b><span class="tag">Grad 1</span><span class="tag">Bonusaktion</span></div><p>Nach einem Treffer: +1W6 Feuer. Das Ziel brennt und nimmt am Anfang seiner Züge 1W6 Feuer, bis es einen CON-RW SG 15 schafft.</p></div>
+          <div class="spell"><div><b>Wrathful Smite</b><span class="tag">Grad 1</span><span class="tag">Bonusaktion</span></div><p>Der nächste Treffer macht +1W6 Schaden. Ziel macht WIS-RW SG 15 oder ist <i>Verängstigt</i>.</p></div>
+          <div class="spell"><div><b>Shining Smite / Branding Smite</b><span class="tag">Grad 2</span><span class="tag">Bonusaktion</span><span class="tag k">Konz.</span></div><p>+2W6 gleisend. Das Ziel leuchtet, kann nicht unsichtbar werden, Angriffe gegen es haben Vorteil (Shining).</p></div>
+          <div class="spell"><div><b>Command</b><span class="tag">Grad 1</span><span class="tag">Aktion</span></div><p>Ein Wort als Befehl: Komm her, Lass fallen, Flieh, Wirf dich nieder, Halt. Ziel in 18 m macht WIS-RW SG 15, sonst gehorcht es in seinem nächsten Zug.</p></div>
+          <div class="spell"><div><b>Bless</b><span class="tag">Grad 1</span><span class="tag">Aktion</span><span class="tag k">Konz.</span></div><p>Bis zu 3 Verbündete addieren 1W4 auf Angriffe und Rettungswürfe, 1 Minute.</p></div>
+          <div class="spell"><div><b>Shield of Faith</b><span class="tag">Grad 1</span><span class="tag">Bonusaktion</span><span class="tag k">Konz.</span></div><p>Eine Kreatur bekommt +2 RK für 10 Minuten.</p></div>
+          <div class="spell"><div><b>Divine Favor</b><span class="tag">Grad 1</span><span class="tag">Bonusaktion</span></div><p>1 Minute lang machen seine Waffentreffer +1W4 gleisend.</p></div>
+          <div class="spell"><div><b>Compelled Duel</b><span class="tag">Grad 1</span><span class="tag">Bonusaktion</span><span class="tag k">Konz.</span></div><p>Ziel macht WIS-RW SG 15. Bei Fehlschlag Nachteil auf Angriffe gegen alle außer Ulrik und es darf sich nicht weit von ihm entfernen. Schützt die anderen.</p></div>
+        </div>
+        <div class="spells">
+          <div class="spell"><div><b>Hold Person</b><span class="tag">Grad 2</span><span class="tag">Aktion</span><span class="tag k">Konz.</span></div><p>Ein Humanoider in 18 m macht WIS-RW SG 15 oder ist <i>Gelähmt</i>. Wiederholt den Wurf am Ende jedes Zugs.</p><p class="warnbox" style="margin-top:4px">Gelähmt heißt: jeder Nahkampftreffer ist kritisch. Mit Smite ist der Gegner meist sofort tot. Gegen menschliche Bosse sehr stark.</p></div>
+          <div class="spell"><div><b>Spiritual Weapon</b><span class="tag">Grad 2</span><span class="tag">Bonusaktion</span></div><p>Schwebende Waffe in 18 m: Zauberangriff +7, 1W8+4 Energie. In späteren Zügen als Bonusaktion 6 m bewegen und wieder angreifen. 1 Minute.</p></div>
+          <div class="spell"><div><b>Armor of Agathys</b><span class="tag">Grad 1</span><span class="tag">Aktion</span></div><p>5 temporäre TP. Solange sie da sind, nimmt jeder, der ihn im Nahkampf trifft, 5 Kälteschaden. Mit Platz 2: 10 und 10.</p></div>
+          <div class="spell"><div><b>Cure Wounds</b><span class="tag">Grad 1</span><span class="tag">Aktion</span></div><p>Berührung heilt 2W8+4 TP (2014: 1W8+4).</p></div>
+          <div class="spell"><div><b>Heroism</b><span class="tag">Grad 1</span><span class="tag">Aktion</span><span class="tag k">Konz.</span></div><p>Ziel ist immun gegen Angst und bekommt jede Runde 4 temporäre TP.</p></div>
+          <div class="spell"><div><b>Aid</b><span class="tag">Grad 2</span><span class="tag">Aktion</span></div><p>Bis zu 3 Kreaturen: +5 maximale und aktuelle TP für 8 Stunden. Wird gern morgens gewirkt.</p></div>
+          <div class="spell"><div><b>Lesser Restoration</b><span class="tag">Grad 2</span></div><p>Beendet Blind, Taub, Gelähmt oder Vergiftet bei einer Kreatur.</p></div>
+          <div class="spell"><div><b>Zone of Truth</b><span class="tag">Grad 2</span><span class="tag">Aktion</span></div><p>Kugel mit 4,5 m Radius. Wer den CHA-RW SG 15 nicht schafft, kann 10 Minuten nicht absichtlich lügen. Perfekt für Verhöre.</p></div>
+          <div class="spell"><div><b>Weitere</b></div><p>Detect Magic, Detect Evil and Good, Protection from Evil and Good, Find Steed (Geisterpferd), Warding Bond, Prayer of Healing. „Searing Orb“ und „Pinky Swear“ sind D&amp;D-Beyond-Sonderzauber: Lass sie dir vom Spieler erklären.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Gute Proben für Ulrik</h3>
+      <ul>
+        <li><b>Athletik +8:</b> Tore aufbrechen, Gegner packen, schwere Dinge heben</li>
+        <li><b>Einschüchtern +7:</b> Verhöre, Gegner zur Aufgabe zwingen</li>
+        <li><b>Überzeugen +7:</b> vor Autoritäten, Kirche, Wachen</li>
+        <li><b>Religion +6</b> (Expertise): Untote, Teufel, heilige Symbole, Kulte</li>
+        <li><b>Wahrnehmung +5</b>, passiv 15: die beste Wache der Gruppe</li>
+        <li><b>Heilkunde +5:</b> Sterbende stabilisieren, Wunden deuten</li>
+      </ul>
+      <div class="warnbox"><b>Schwach:</b> Heimlichkeit −1, dazu Nachteil wegen des Schienenpanzers <span class="en">Splint Armor</span>. Akrobatik und DEX-Rettungswürfe −1. Fallen und Feuerbälle treffen ihn.</div>
+    </div>
+    <div class="card">
+      <h3>Für dich als DM</h3>
+      <ul>
+        <li>Mit RK 21 trifft ihn ein normales Monster (+4) nur mit 17 oder mehr. Willst du ihn fordern: Rettungswürfe gegen DEX, viele Gegner, Fernkampf auf die anderen.</li>
+        <li>Er macht pro Runde leicht 30 Schaden. Bosse brauchen mehr TP oder Helfer.</li>
+        <li>Rollenspiel: Er befolgt das Gesetz, auch wenn es Leid verursacht, und hasst „Unreine“. Ein Gesetz, das Unschuldige trifft, bringt ihn in ein spannendes Dilemma.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- JAKOBUS -->
+  <div class="char-head" id="ch-jakobus">
+    <h2>Jakobus „Pebbles“ Tenacdios</h2>
+    <p class="who">Barde 5, Schule des Wissens <span class="en">College of Lore</span> · Halbling (robust) · Entertainer · Spieler: Andi</p>
+    <div class="chips"><span class="chip hot">RK <b>14</b></span><span class="chip">TP <b>38</b></span><span class="chip">Bewegung <b>7,5 m</b></span><span class="chip">Init <b>+3</b></span><span class="chip">STR <b>−1</b></span><span class="chip">DEX <b>+3</b></span><span class="chip">CON <b>+2</b></span><span class="chip">INT <b>+0</b></span><span class="chip">WIS <b>+1</b></span><span class="chip">CHA <b>+3</b></span><span class="chip">RW geübt: DEX <b>+6</b>, CHA <b>+6</b></span><span class="chip">Klein</span></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>In seinem Zug</h3>
+      <dl class="kv">
+        <dt>Aktion</dt><dd>Meist ein Zauber, am häufigsten <b>Vicious Mockery</b>. Oder ein Angriff mit dem Rapier <code>+6</code>, <code>1W8+3</code> Stich (nur ein Angriff, kein Extra-Angriff).</dd>
+        <dt>Bonusaktion</dt><dd><b>Bardische Inspiration</b> an einen Verbündeten.</dd>
+        <dt>Reaktion</dt><dd><b>Cutting Words</b> gegen einen Gegner, oder Gelegenheitsangriff.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>Bardische Inspiration <span class="en">Bardic Inspiration</span> „Power-Riff“</h3>
+      <p>Bonusaktion: Ein Verbündeter in 18 m bekommt einen <b>W8</b>. Innerhalb von 10 Minuten darf er ihn auf eine Probe, einen Angriff oder einen Rettungswurf addieren, auch nachdem er gewürfelt hat.</p>
+      <p>3×, kommt nach einer <b>kurzen</b> Rast zurück.</p>
+    </div>
+    <div class="card">
+      <h3>Cutting Words „Zwischenruf“</h3>
+      <p>Reaktion: Wenn ein Gegner in 18 m einen Angriff, eine Probe oder einen Schadenswurf macht, zieht Jakobus einen Inspirationswürfel (W8) davon ab.</p>
+      <div class="tip"><b>Wichtig für dich:</b> Sag bei Monsterangriffen die Zahl laut und mach eine kurze Pause, bevor du „trifft“ sagst. Er darf erst danach reagieren. Teilt sich die Würfel mit der Inspiration.</div>
+    </div>
+    <div class="card">
+      <h3>Halblingsmerkmale und mehr</h3>
+      <ul>
+        <li><b>Glück</b> <span class="en">Lucky</span>: Eine gewürfelte 1 bei Angriff, Probe oder Rettungswurf darf er neu würfeln.</li>
+        <li><b>Tapfer</b> <span class="en">Brave</span>: Vorteil auf Rettungswürfe gegen Angst.</li>
+        <li><b>Halblingsflinkheit</b>: darf durch Felder größerer Kreaturen laufen.</li>
+        <li><b>Robust</b>: Vorteil gegen Gift, Resistenz gegen Giftschaden.</li>
+        <li><b>Alleskönner</b> <span class="en">Jack of All Trades</span>: +1 auf Proben ohne Übung.</li>
+        <li><b>Lied der Rast</b> <span class="en">Song of Rest</span>: Bei einer kurzen Rast heilen alle, die Trefferwürfel ausgeben, 1W6 extra.</li>
+      </ul>
+    </div>
+    <div class="card wide">
+      <h3>Zauber · SG 14 · Zauberangriff +6</h3>
+      <p class="slots">Zauberplätze: Grad 1 ○○○○ · Grad 2 ○○○ · Grad 3 ○○</p>
+      <div class="grid" style="margin-top:6px">
+        <div class="spells">
+          <div class="spell"><div><b>Vicious Mockery</b> <span class="nick">„Diss-Track“</span><span class="tag">Zaubertrick</span><span class="tag">Aktion</span></div><p>Ziel in 18 m macht WIS-RW SG 14. Bei Fehlschlag 2W4 psychisch und Nachteil auf seinen nächsten Angriff. Lass ihn die Beleidigung vortragen.</p></div>
+          <div class="spell"><div><b>Prestidigitation</b> <span class="nick">„Pyro-Effekte“</span><span class="tag">Zaubertrick</span></div><p>Kleine Zaubertricks: Funken, Geräusche, Gegenstand säubern oder färben, Kerze anzünden. Kein Schaden.</p></div>
+          <div class="spell"><div><b>Dancing Lights</b> <span class="nick">„Bühnenlicht“</span><span class="tag">Zaubertrick</span><span class="tag k">Konz.</span></div><p>Bis zu 4 schwebende Lichter, als Bonusaktion bis 18 m bewegbar. Nützlich, weil er keine Dunkelsicht hat.</p></div>
+          <div class="spell"><div><b>Thunderwave</b> <span class="nick">„Power-Akkord“</span><span class="tag">Grad 1</span><span class="tag">Aktion</span></div><p>Würfel mit 4,5 m Kantenlänge vor ihm. CON-RW SG 14: Fehlschlag 2W8 Donner und 3 m weggestoßen, Erfolg halber Schaden. <b>Sehr laut</b>, über 90 m hörbar.</p></div>
+          <div class="spell"><div><b>Silent Image</b> <span class="nick">„Bühnenshow“</span><span class="tag">Grad 1</span><span class="tag k">Konz.</span></div><p>Stumme Illusion bis 4,5 m Größe. Wer sie untersucht, macht Nachforschungen gegen SG 14. Berühren entlarvt sie.</p></div>
+          <div class="spell"><div><b>Tasha's Hideous Laughter</b><span class="tag">Grad 1</span><span class="tag">Aktion</span><span class="tag k">Konz.</span></div><p>WIS-RW SG 14 oder das Ziel liegt lachend am Boden, ist <i>Kampfunfähig</i>. Neuer Wurf am Ende jedes Zugs und wenn es Schaden nimmt.</p></div>
+        </div>
+        <div class="spells">
+          <div class="spell"><div><b>Charm Person</b> <span class="nick">„Groupies“</span><span class="tag">Grad 1</span><span class="tag">Aktion</span></div><p>Humanoider macht WIS-RW SG 14 (mit Vorteil, wenn man gerade gegen ihn kämpft). Sonst 1 Stunde <i>Bezaubert</i>. Danach <b>weiß das Ziel, dass es verzaubert war</b>. Das darf Folgen haben.</p></div>
+          <div class="spell"><div><b>Enthrall</b> <span class="nick">„Publikum fesseln“</span><span class="tag">Grad 2</span><span class="tag">Aktion</span><span class="tag k">Konz.</span></div><p>Zuhörer in 18 m machen WIS-RW SG 14. Bei Fehlschlag Nachteil auf Wahrnehmung gegen alle außer Jakobus. Perfekt, damit jemand anderes stiehlt oder schleicht.</p></div>
+          <div class="spell"><div><b>Shatter</b> <span class="nick">„Glasbrecher-Schrei“</span><span class="tag">Grad 2</span><span class="tag">Aktion</span></div><p>Kugel mit 3 m Radius in 18 m. CON-RW SG 14: 3W8 Donner, halb bei Erfolg. Steinwesen und Konstrukte würfeln mit Nachteil. Laut.</p></div>
+          <div class="spell"><div><b>Major Image</b> <span class="nick">„Mega-Bühnenshow“</span><span class="tag">Grad 3</span><span class="tag k">Konz.</span></div><p>Illusion bis 6 m mit Ton, Geruch und Temperatur. Durchschauen: Nachforschungen gegen SG 14. Erlaube kreative Ideen.</p></div>
+          <div class="spell"><div><b>Hypnotic Pattern</b> <span class="nick">„Lichtshow“</span><span class="tag">Grad 3</span><span class="tag">Aktion</span><span class="tag k">Konz.</span></div><p>Würfel mit 9 m Kantenlänge. Wer es sieht, macht WIS-RW SG 14. Bei Fehlschlag 1 Minute <i>Bezaubert</i> und <i>Kampfunfähig</i>, Bewegung 0. Endet bei Schaden oder wenn jemand das Ziel wachrüttelt.</p><p class="warnbox" style="margin-top:4px">Kann einen ganzen Kampf beenden. Plane Gegner ein, die nicht hinsehen, oder Anführer, die ihre Leute wachrütteln.</p></div>
+          <div class="spell"><div><b>Kein Heilzauber</b></div><p>Jakobus hat weder Healing Word noch Cure Wounds. Im Kampf heilen nur Ulrik und Wayne (sich selbst).</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Gute Proben für Jakobus</h3>
+      <ul>
+        <li><b>Auftreten +9:</b> Ablenkung, Geld verdienen, Kost und Logis für einen Auftritt</li>
+        <li><b>Überzeugen +9:</b> verhandeln, Rabatte, Wachen bequatschen</li>
+        <li><b>Täuschen +6, Einschüchtern +6:</b> Lügen, bluffen, große Sprüche</li>
+        <li><b>Fingerfertigkeit +6:</b> Taschendiebstahl, Kartentricks</li>
+        <li><b>Akrobatik +6:</b> über Tische springen, Bühnenstunts</li>
+        <li><b>Motiv erkennen +4:</b> „das Publikum lesen“</li>
+        <li><b>Religion +3:</b> Wissen über Teufel</li>
+      </ul>
+      <div class="warnbox"><b>Schwach:</b> Athletik +0, STR-Rettungswürfe −1. Leicht zu packen und wegzustoßen. RK 14 und 38 TP: das leichteste Ziel der Gruppe.</div>
+    </div>
+    <div class="card">
+      <h3>Für dich als DM</h3>
+      <ul>
+        <li><b>Hintergrund „By Popular Demand“:</b> Er findet überall kostenlos Unterkunft, wenn er auftritt. Fans erkennen ihn manchmal.</li>
+        <li><b>Story-Haken:</b> die Saiten des Schicksals, der Teufel, der seine Haare zurück will, Bandpartner Kael. Ein Rock-Duell kann eine vergleichende Auftreten-Probe sein.</li>
+        <li>Schwäche laut Bogen: abgelenkt durch Ruhm, Snacks und Streit um den Bandnamen. Lass NPCs das ausnutzen.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- WAYNE -->
+  <div class="char-head" id="ch-wayne">
+    <h2>Wayne Wummsbart</h2>
+    <p class="who">Kämpfer 5, Champion · Zwerg · Soldat · Regeln 2024 · Spieler: CoachStan</p>
+    <div class="chips"><span class="chip hot">RK <b>16</b></span><span class="chip">TP <b>44</b></span><span class="chip">Bewegung <b>9 m</b></span><span class="chip">Init <b>+2</b> mit Vorteil</span><span class="chip">STR <b>+4</b></span><span class="chip">DEX <b>+2</b></span><span class="chip">CON <b>+1</b></span><span class="chip">INT <b>+1</b></span><span class="chip">WIS <b>+0</b></span><span class="chip">CHA <b>−1</b></span><span class="chip">RW geübt: STR <b>+7</b>, CON <b>+4</b></span><span class="chip">Dunkelsicht 36 m</span><span class="chip">Resistenz Gift</span></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>In seinem Zug</h3>
+      <dl class="kv">
+        <dt>Aktion</dt><dd><b>Angreifen:</b> zwei Angriffe. Kriegshammer <code>+7</code>, <code>1W8+4</code> Wucht (beidhändig <code>1W10+4</code>). Schwere Armbrust <code>+5</code>, <code>1W10+2</code>, Reichweite 30/120 m, aber nur ein Schuss pro Aktion (Nachladen). Wurfspeere hat er auch.</dd>
+        <dt>Bonusaktion</dt><dd><b>Second Wind</b> oder Steingespür. Gift auf die Waffe auftragen.</dd>
+        <dt>Reaktion</dt><dd>Gelegenheitsangriff.</dd>
+        <dt>Extra</dt><dd><b>Action Surge</b>: 1× pro kurzer Rast eine zweite Aktion. Also <b>vier Angriffe</b> in einem Zug.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>Champion-Merkmale</h3>
+      <ul>
+        <li><b>Verbesserter kritischer Treffer</b>: kritisch schon bei <b>19 oder 20</b>.</li>
+        <li><b>Bemerkenswerter Athlet</b>: Vorteil auf Initiative und Athletik. Nach einem kritischen Treffer darf er sich die halbe Bewegung ohne Gelegenheitsangriffe bewegen.</li>
+        <li><b>Wilder Angreifer</b> <span class="en">Savage Attacker</span>: 1× pro Zug Schadenswürfel zweimal werfen und den besseren nehmen.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Second Wind und Taktik</h3>
+      <ul>
+        <li><b>Second Wind</b>: Bonusaktion, heilt <code>1W10+5</code>. 3× pro langer Rast, eine Ladung kommt nach jeder kurzen Rast zurück.</li>
+        <li><b>Taktischer Wechsel</b> <span class="en">Tactical Shift</span>: dabei 4,5 m bewegen ohne Gelegenheitsangriffe.</li>
+        <li><b>Taktischer Verstand</b> <span class="en">Tactical Mind</span>: Misslingt eine Probe, kann er eine Second-Wind-Ladung nutzen und 1W10 dazurechnen. Klappt es trotzdem nicht, bleibt die Ladung.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Waffenmeisterschaften <span class="en">Weapon Mastery</span></h3>
+      <ul>
+        <li><b>Kriegshammer, Stoßen</b> <span class="en">Push</span>: Bei einem Treffer das Ziel bis 3 m wegstoßen (bis Größe groß). Kein Rettungswurf. Auch die schwere Armbrust hat Push.</li>
+        <li><b>Streitaxt, Umstoßen</b> <span class="en">Topple</span>: CON-RW SG 15 oder Liegend.</li>
+        <li><b>Zweihändige Axt, Spalten</b> <span class="en">Cleave</span>: 1× pro Zug ein zweites Ziel daneben angreifen.</li>
+        <li><b>Hackbeil, Streifen</b> <span class="en">Graze</span>: Auch bei einem Fehlschlag 4 Schaden.</li>
+      </ul>
+      <p style="font-size:.9rem;color:var(--muted)">Streitaxt, Zweihänder-Axt und Hackbeil stehen nicht in seinem Inventar. Findet er eine, kann er sie sofort mit Meisterschaft nutzen.</p>
+    </div>
+    <div class="card">
+      <h3>Zwergenmerkmale und Ausrüstung</h3>
+      <ul>
+        <li><b>Steingespür</b> <span class="en">Stonecunning</span>: Bonusaktion, 3× pro langer Rast. 10 Minuten Erschütterungssinn 18 m, solange er Stein berührt. Spürt Kreaturen hinter Wänden und im Dunkeln.</li>
+        <li><b>Zwergische Zähigkeit</b>: Gift macht halben Schaden, Vorteil gegen Vergiftet.</li>
+        <li><b>Einfaches Gift</b> <span class="en">Basic Poison</span>: Bonusaktion auftragen, nächster Treffer +1W4 Gift.</li>
+        <li><b>Krähenfüße</b> <span class="en">Caltrops</span>, Öl, Brecheisen, zwei Heilerkits.</li>
+        <li>Kampfstil „Zwei Waffen“ bringt erst etwas mit zwei leichten Waffen (Handbeil, Kurzschwert).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Gute Proben für Wayne</h3>
+      <ul>
+        <li><b>Athletik +7 mit Vorteil:</b> Türen eintreten, klettern, ringen, Felsen schieben. Fast immer erfolgreich</li>
+        <li><b>Akrobatik +5:</b> Gleichgewicht, Sturz abfangen</li>
+        <li><b>Überlebenskunst +3:</b> Spuren lesen, Weg finden</li>
+        <li><b>Einschüchtern +2:</b> Sticheleien vor dem Kampf</li>
+        <li><b>Steingespür</b> in Höhlen und Verliesen statt einer Wahrnehmungsprobe</li>
+      </ul>
+      <div class="warnbox"><b>Schwach:</b> Wahrnehmung +0 (passiv 10), Motiv erkennen +0, Charisma −1. Überrascht man leicht, und er fällt auf Lügen herein.</div>
+    </div>
+    <div class="card">
+      <h3>Für dich als DM</h3>
+      <ul>
+        <li>Mit Action Surge macht er in einer Runde 40+ Schaden. Rechne damit, dass ein Boss in Runde 1 halb tot ist.</li>
+        <li>Bei 19 und 20 ist er kritisch. Sag ihm das ruhig, falls er es vergisst.</li>
+        <li>Rollenspiel: Er hilft jedem in Not, egal mit welchen Absichten. Ein falscher Hilferuf ist der perfekte Hinterhalt. Außerdem zettelt er gern Kämpfe an.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RANGER -->
+  <div class="char-head" id="ch-ranger">
+    <h2>Der Ranger</h2>
+    <p class="who">Waldläufer 5 · noch kein Bogen. Unten typische Werte nach den 2024er Regeln, bitte mit dem Spieler abgleichen.</p>
+  </div>
+  <div class="grid">
+    <div class="card wide">
+      <h3>Werte vom Spieler eintragen</h3>
+      <div class="rg-form">
+        <label for="rg-name">Name<input type="text" id="rg-name"></label>
+        <label for="rg-species">Volk<input type="text" id="rg-species"></label>
+        <label for="rg-sub">Unterklasse<select id="rg-sub"><option value="">unbekannt</option><option>Hunter</option><option>Gloom Stalker</option><option>Beast Master</option><option>Fey Wanderer</option><option>andere</option></select></label>
+        <label for="rg-ac">RK<input type="number" id="rg-ac"></label>
+        <label for="rg-hp">TP<input type="number" id="rg-hp"></label>
+        <label for="rg-pp">Passive Wahrn.<input type="number" id="rg-pp"></label>
+        <label for="rg-dc">Zauber-SG<input type="number" id="rg-dc"></label>
+        <label for="rg-atk">Hauptangriff<input type="text" id="rg-atk" placeholder="Langbogen +7, 1W8+4"></label>
+      </div>
+      <label for="rg-notes" style="font-size:.85rem;color:var(--muted)">Notizen (Zauber, Besonderheiten)</label>
+      <textarea id="rg-notes" placeholder="z.B. Dunkelsicht, Tiergefährte, vorbereitete Zauber"></textarea>
+      <p style="font-size:.85rem;color:var(--muted)">Wird nur in diesem Browser gespeichert und erscheint in der Gruppenübersicht und beim Monster-Angriffswürfler.</p>
+    </div>
+    <div class="card">
+      <h3>In seinem Zug (typisch)</h3>
+      <dl class="kv">
+        <dt>Aktion</dt><dd>Zwei Angriffe (Extra-Angriff ab Stufe 5), meist mit Langbogen oder zwei Waffen.</dd>
+        <dt>Bonusaktion</dt><dd><b>Hunter's Mark</b> wirken oder auf ein neues Ziel umsetzen. Bei zwei leichten Waffen: Zusatzangriff.</dd>
+        <dt>Reaktion</dt><dd>Gelegenheitsangriff.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>Hunter's Mark <span class="en">Mal des Jägers</span></h3>
+      <p>Bonusaktion, Konzentration. Ein Ziel wird markiert: Jeder Waffentreffer gegen es macht <b>+1W6 Energie</b>. Vorteil auf Wahrnehmung und Überlebenskunst, um es zu finden. Stirbt das Ziel, kann er die Markierung als Bonusaktion weitergeben.</p>
+      <p>Auf Stufe 5 kann er es <b>3× pro langer Rast kostenlos</b> wirken <span class="en">Favored Enemy</span>, danach mit Zauberplätzen.</p>
+    </div>
+    <div class="card">
+      <h3>Typische Merkmale auf Stufe 5</h3>
+      <ul>
+        <li>Zauberplätze: Grad 1 ○○○○ · Grad 2 ○○. Zauberattribut Weisheit.</li>
+        <li><b>Geschickter Entdecker</b> <span class="en">Deft Explorer</span>: Expertise in einer Fertigkeit, zwei Sprachen.</li>
+        <li>Zwei Waffenmeisterschaften, ein Kampfstil (oft Bogenschütze: +2 auf Fernkampf).</li>
+        <li>Beliebte Zauber: Cure Wounds, Goodberry, Ensnaring Strike, Fog Cloud, Pass without Trace (ganze Gruppe +10 Heimlichkeit), Spike Growth, Lesser Restoration.</li>
+        <li><b>Hunter</b>: 1× pro Zug +1W8 gegen verletzte Ziele (Colossus Slayer) oder Zusatzangriff gegen ein Ziel daneben (Horde Breaker).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Gute Proben für einen Ranger</h3>
+      <ul>
+        <li><b>Überlebenskunst:</b> Spuren, Weg finden, Jagen, Wetter</li>
+        <li><b>Wahrnehmung:</b> meist die höchste passive Wahrnehmung neben Ulrik</li>
+        <li><b>Heimlichkeit:</b> vorausschleichen, Späher</li>
+        <li><b>Naturkunde:</b> Pflanzen, Tiere, Gifte</li>
+        <li><b>Mit Tieren umgehen:</b> Pferde, wilde Tiere beruhigen</li>
+      </ul>
+      <div class="tip"><b>Gib ihm die Wildnis:</b> Spurensuche, Vorauskundschaften, Hinterhalte im Wald erkennen. Das ist sein Moment.</div>
+    </div>
+  </div>
+
+  <!-- GRUPPE -->
+  <div class="char-head" id="ch-gruppe"><h2>DM-Hinweise zur Gruppe</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Stärken</h3>
+      <ul>
+        <li>Sehr viel Nahkampfschaden: Ulrik mit Smites, Wayne mit Action Surge.</li>
+        <li>Ulrik ist mit RK 21 kaum zu treffen.</li>
+        <li>Kampfbeender: Hypnotic Pattern, Hold Person, Tasha's Laughter, Command.</li>
+        <li>Soziale Szenen: Jakobus (+9) und Ulrik (+7).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Schwächen, die du nutzen kannst</h3>
+      <ul>
+        <li><b>Wenig Heilung im Kampf.</b> Kein Healing Word. Wer umfällt, bleibt eine Weile liegen.</li>
+        <li><b>Dunkelheit:</b> Ulrik und Jakobus haben keine Dunkelsicht.</li>
+        <li><b>Fernkampf und Flieger:</b> Nur Ranger und Wayne schießen gut.</li>
+        <li><b>DEX-Rettungswürfe</b> treffen Ulrik (−1) und Wayne (+2).</li>
+        <li><b>Jakobus</b> ist das leichteste Ziel. Kluge Gegner wissen das.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Spannung am Tisch</h3>
+      <ul>
+        <li>Ulrik hasst „Unreine“, Wayne hilft jedem. Ein hilfsbedürftiger Tiefling oder Ork bringt beide gegeneinander. Klärt vorher, ob die Spieler solchen Streit mögen.</li>
+        <li>Thunderwave und Shatter sind laut. Im Dungeon hören das die Nachbarräume.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== NPC ===================== -->
+<section class="panel" id="p-npc" data-tab="npc" hidden>
+  <p class="lead">Ein Klick, ein NPC. Felder, die dir gefallen, kannst du sperren und den Rest neu würfeln. Wenn die Gruppe angreift, klapp die Kampfwerte auf.</p>
+  <div class="npc-layout" style="margin-top:16px">
+    <div class="npc-card" id="npc-card">
+      <div class="npc-top"><h3 id="npc-name">…</h3><button class="lock" data-lock="name" aria-pressed="false" style="color:inherit">Sperren</button><div class="sub" id="npc-sub"></div></div>
+      <div class="npc-fields" id="npc-fields"></div>
+      <div class="npc-actions">
+        <button class="primary" id="npc-roll">Neuen NPC würfeln</button>
+        <button id="npc-copy">Text kopieren</button>
+        <button id="npc-save">Merken</button>
+        <label style="display:flex;align-items:center;gap:6px;font-size:.95rem;flex:1 1 220px">Beruf:
+          <input type="text" id="npc-job" list="npc-job-list" placeholder="Zufällig (oder eintippen)" aria-label="Beruf festlegen" style="flex:1 1 auto"></label>
+        <datalist id="npc-job-list"></datalist>
+        <label style="display:flex;align-items:center;gap:6px;font-size:.95rem">Kampfwerte:
+          <select id="npc-tier" aria-label="Kampfstärke"></select></label>
+      </div>
+      <details id="npc-stats-wrap">
+        <summary style="padding:0 18px 14px;cursor:pointer;font-weight:700;color:var(--d20)">Kampfwerte anzeigen (falls die Party angreift)</summary>
+        <div class="statblock" id="npc-stats"></div>
+      </details>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div class="card"><h3>Zuletzt gewürfelt</h3><div class="hist" id="hist"><p class="empty">Noch nichts.</p></div></div>
+      <div class="card"><h3>Gemerkt</h3><div class="hist" id="saved"><p class="empty">Klick auf „Merken“, um einen NPC hier zu behalten. Wird nur in diesem Browser gespeichert.</p></div></div>
+      <div class="card"><h3>NPCs gut spielen</h3><ul><li>Eine Eigenart reicht. Übertreib sie.</li><li>Jeder NPC will etwas. Lass ihn danach fragen.</li><li>Notier Name und Satz sofort, die Spieler fragen später danach.</li><li>Greift die Party an, kämpfen die wenigsten bis zum Tod.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<footer>Regelzusammenfassung nach dem System Reference Document 5.2 (CC-BY-4.0, Wizards of the Coast), eigene Formulierung und deutsche Übersetzung. NPC-Kampfwerte sind vereinfachte, eigene Werte für schnelles Spielen.</footer>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,1800)}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+
+/* ---------- Modifikator-Leiste ---------- */
+
+const scores=[[1,"−5"],["2–3","−4"],["4–5","−3"],["6–7","−2"],["8–9","−1"],["10–11","+0"],["12–13","+1"],["14–15","+2"],["16–17","+3"],["18–19","+4"],["20–21","+5"],["22–23","+6"]];
+$("#modbar").innerHTML=scores.map(([s,m])=>`<div><b>${m}</b><span>Wert ${s}</span></div>`).join("");
+
+/* ---------- Fertigkeiten ---------- */
+const skills=[
+["Akrobatik","Acrobatics","dex","Balancieren, Saltos, sich aus einem Griff winden"],
+["Arkane Kunde","Arcana","int","Zauber, magische Gegenstände, Ebenen erkennen"],
+["Athletik","Athletics","str","Klettern, Schwimmen, Springen, Ringen"],
+["Auftreten","Performance","cha","Musik, Tanz, Schauspiel, Ablenkung"],
+["Einschüchtern","Intimidation","cha","Drohen, Angst machen"],
+["Fingerfertigkeit","Sleight of Hand","dex","Taschendiebstahl, Taschenspielertricks, Schlösser (mit Werkzeug)"],
+["Geschichte","History","int","Ereignisse, Königreiche, alte Kriege"],
+["Heilkunde","Medicine","wis","Sterbende stabilisieren, Krankheit erkennen"],
+["Heimlichkeit","Stealth","dex","Schleichen, verstecken"],
+["Mit Tieren umgehen","Animal Handling","wis","Tiere beruhigen, reiten, Absichten erkennen"],
+["Motiv erkennen","Insight","wis","Lügen und Absichten durchschauen"],
+["Nachforschungen","Investigation","int","Hinweise kombinieren, Mechanismen verstehen, Akten durchsuchen"],
+["Naturkunde","Nature","int","Pflanzen, Tiere, Wetter, Gelände"],
+["Religion","Religion","int","Götter, Riten, Untote, heilige Symbole"],
+["Täuschen","Deception","cha","Lügen, verkleiden, bluffen"],
+["Überlebenskunst","Survival","wis","Spuren lesen, jagen, Weg finden"],
+["Überzeugen","Persuasion","cha","Verhandeln, bitten, freundlich überzeugen"],
+["Wahrnehmung","Perception","wis","Bemerken, hören, sehen, Hinterhalte entdecken"]];
+$("#skills").innerHTML=skills.map(([de,en,ab,w])=>`<tr><td><b>${de}</b></td><td class="en">${en}</td><td><span class="pill ${ab}">${ab.toUpperCase()}</span></td><td>${w}</td></tr>`).join("");
+
+/* ---------- Zustände ---------- */
+const conds=[
+["Bezaubert","Charmed",["Kann den Bezauberer nicht angreifen oder mit schädlichen Effekten anvisieren.","Der Bezauberer hat Vorteil auf soziale Proben gegen die Kreatur."]],
+["Betäubt","Stunned",["Kampfunfähig (siehe dort).","Scheitert automatisch an STR- und DEX-Rettungswürfen.","Angriffe gegen sie haben Vorteil."]],
+["Bewusstlos","Unconscious",["Kampfunfähig und Liegend, lässt alles fallen, Bewegungsrate 0.","Scheitert automatisch an STR- und DEX-Rettungswürfen.","Angriffe gegen sie haben Vorteil.","Treffer aus 1,5 m sind kritische Treffer.","Bekommt nichts von der Umgebung mit."]],
+["Blind","Blinded",["Sieht nichts, Proben die Sehen brauchen scheitern automatisch.","Angriffe gegen sie haben Vorteil, ihre eigenen Angriffe Nachteil."]],
+["Erschöpfung","Exhaustion",["Stufen 1 bis 6, stapelt sich.","Pro Stufe: −2 auf alle W20-Tests und −1,5 m (5 ft) Bewegungsrate.","Stufe 6: Tod.","Eine lange Rast entfernt eine Stufe."]],
+["Festgesetzt","Restrained",["Bewegungsrate 0.","Angriffe gegen sie haben Vorteil, ihre Angriffe Nachteil.","Nachteil auf DEX-Rettungswürfe."]],
+["Gelähmt","Paralyzed",["Kampfunfähig, Bewegungsrate 0.","Scheitert automatisch an STR- und DEX-Rettungswürfen.","Angriffe gegen sie haben Vorteil.","Treffer aus 1,5 m sind kritische Treffer."]],
+["Gepackt","Grappled",["Bewegungsrate 0.","Nachteil auf Angriffe gegen alle außer den Packenden.","Der Packende kann sie mitziehen (kostet ihn doppelte Bewegung).","Befreien: Aktion, Athletik- oder Akrobatik-Probe gegen den SG des Packens."]],
+["Kampfunfähig","Incapacitated",["Keine Aktionen, Bonusaktionen oder Reaktionen.","Konzentration endet.","Kann nicht sprechen.","Nachteil auf Initiative."]],
+["Liegend","Prone",["Kann nur kriechen (doppelte Kosten) oder mit halber Bewegungsrate aufstehen.","Eigene Angriffe mit Nachteil.","Angriffe aus 1,5 m gegen sie mit Vorteil, aus größerer Entfernung mit Nachteil."]],
+["Taub","Deafened",["Hört nichts, Proben die Hören brauchen scheitern automatisch."]],
+["Unsichtbar","Invisible",["Vorteil auf Initiative.","Nicht von Effekten betroffen, die Sehen voraussetzen (außer der Angreifer sieht sie irgendwie).","Angriffe gegen sie mit Nachteil, ihre Angriffe mit Vorteil."]],
+["Verängstigt","Frightened",["Nachteil auf Proben und Angriffe, solange die Angstquelle in Sicht ist.","Darf sich der Quelle nicht freiwillig nähern."]],
+["Vergiftet","Poisoned",["Nachteil auf Angriffswürfe und Attributsproben."]],
+["Versteinert","Petrified",["Wird zu Stein, wiegt zehnmal so viel, altert nicht.","Kampfunfähig, Bewegungsrate 0, scheitert an STR- und DEX-Rettungswürfen.","Angriffe gegen sie mit Vorteil, Resistenz gegen allen Schaden, immun gegen Gift."]]];
+$("#conditions").innerHTML=conds.map(([de,en,l])=>`<div class="card"><h3>${de} <span class="en">${en}</span></h3><ul>${l.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("")
+ +`<div class="card"><h3>Merkhilfe</h3><p><b>Am Boden</b> = Vorteil für Nahkämpfer, Nachteil für Schützen.</p><p><b>Gelähmt, Bewusstlos</b> = Nahkampftreffer werden kritisch. Gefährlich für Spieler.</p><p><b>Kampfunfähig</b> steckt in Betäubt, Gelähmt, Bewusstlos und Versteinert mit drin.</p></div>`;
+
+/* ---------- Würfelbecher ---------- */
+const out=$("#roll-out");
+function showRoll(label,rolls,total,extra){out.innerHTML=`${esc(label)}: <b>${total}</b> <span style="color:var(--muted)">[${rolls.join(", ")}]${extra?" "+esc(extra):""}</span>`;out.classList.remove("flash");void out.offsetWidth;out.classList.add("flash")}
+function rollExpr(expr){
+  const s=expr.toLowerCase().replace(/w/g,"d").replace(/\s/g,"");
+  const parts=s.match(/[+-]?[^+-]+/g); if(!parts) return null;
+  let total=0,rolls=[];
+  for(const p of parts){const sign=p[0]==="-"?-1:1;const t=p.replace(/^[+-]/,"");const m=t.match(/^(\d*)d(\d+)$/);
+    if(m){const n=Math.min(+(m[1]||1),100),d=+m[2];if(!d)return null;for(let i=0;i<n;i++){const r=1+rnd(d);rolls.push(r);total+=sign*r}}
+    else if(/^\d+$/.test(t)) total+=sign*+t; else return null;}
+  return {total,rolls};
+}
+$("#quickdice").innerHTML=[4,6,8,10,12,20,100].map(d=>`<button data-d="${d}" class="${d===20?"d20":""}">W${d}</button>`).join("");
+$("#quickdice").addEventListener("click",e=>{const d=e.target.dataset.d;if(!d)return;const r=1+rnd(+d);showRoll("W"+d,[r],r,d==20&&r===20?"Natürliche 20!":d==20&&r===1?"Natürliche 1.":"")});
+$("#dice-go").addEventListener("click",()=>{const v=$("#dice-expr").value;const r=rollExpr(v);if(!r){out.textContent="Das verstehe ich nicht. Schreib z.B. 2d6+3 oder 1W20+5.";return}showRoll(v,r.rolls,r.total)});
+$("#dice-expr").addEventListener("keydown",e=>{if(e.key==="Enter")$("#dice-go").click()});
+$("#adv").addEventListener("click",()=>{const a=1+rnd(20),b=1+rnd(20);showRoll("Vorteil",[a,b],Math.max(a,b),"höherer zählt")});
+$("#dis").addEventListener("click",()=>{const a=1+rnd(20),b=1+rnd(20);showRoll("Nachteil",[a,b],Math.min(a,b),"niedrigerer zählt")});
+
+/* ---------- Monster-Angriffswürfler ---------- */
+$("#ma-go").addEventListener("click",()=>{
+  const b=+$("#ma-bonus").value||0,ac=+$("#ma-ac").value||10,mode=$("#ma-mode").value,o=$("#ma-out");
+  const a=1+rnd(20),c=1+rnd(20),d=mode==="a"?Math.max(a,c):mode==="d"?Math.min(a,c):a;
+  const dice=mode==="n"?`${d}`:`${d} (aus ${a} und ${c})`;
+  const tot=d+b,crit=d===20,hit=crit||(d!==1&&tot>=ac);
+  let txt=`W20 ${dice} ${b>=0?"+":"−"} ${Math.abs(b)} = <b>${tot}</b> gegen RK ${ac}: `;
+  if(!hit){txt+=d===1?"Natürliche 1, verfehlt.":"Verfehlt."}
+  else{let ex=$("#ma-dmg").value.toLowerCase().replace(/w/g,"d");if(crit)ex=ex.replace(/(\d*)d(\d+)/g,(m,x,y)=>(2*(+x||1))+"d"+y);
+    const r=rollExpr(ex);txt+=(crit?"<b>Kritischer Treffer!</b> ":"Treffer! ")+(r?`Schaden <b>${Math.max(0,r.total)}</b> <span style="color:var(--muted)">[${r.rolls.join(", ")}]${crit?" Würfel verdoppelt":""}</span>`:"Schadensangabe nicht verstanden, z.B. 1d6+2.")}
+  o.innerHTML=txt;o.classList.remove("flash");void o.offsetWidth;o.classList.add("flash");
+});
+
+/* ---------- Begegnungsrechner ---------- */
+const budgets={1:[50,75,100],2:[100,150,200],3:[150,225,400],4:[250,375,500],5:[500,750,1100],6:[600,1000,1400],7:[750,1300,1700],8:[1000,1700,2100],9:[1300,2000,2600],10:[1600,2300,3100],11:[1900,2900,4100],12:[2200,3700,4700],13:[2600,4200,5400],14:[2900,4900,6200],15:[3300,5400,7800],16:[3800,6100,9800],17:[4500,7200,11700],18:[5000,8700,14200],19:[5500,10700,17200],20:[6400,13200,22000]};
+const crs=[["0",10],["1/8",25],["1/4",50],["1/2",100],["1",200],["2",450],["3",700],["4",1100],["5",1800],["6",2300],["7",2900],["8",3900],["9",5000],["10",5900],["11",7200],["12",8400],["13",10000],["14",11500],["15",13000],["16",15000]];
+const half=Math.ceil(crs.length/2);
+$("#crtable").innerHTML=crs.slice(0,half).map((c,i)=>{const o=crs[i+half];return `<tr><td>${c[0]}</td><td class="n">${c[1].toLocaleString("de-DE")}</td><td>${o?o[0]:""}</td><td class="n">${o?o[1].toLocaleString("de-DE"):""}</td></tr>`}).join("");
+let mons=store("dmh-mons")||[{name:"Goblin",cr:"1/4",n:4}];
+function renderMons(){
+  $("#mon-list").innerHTML=mons.map((m,i)=>`<div class="mon-row"><input type="text" value="${esc(m.name)}" data-i="${i}" data-k="name" aria-label="Monstername" style="flex:1 1 140px"><select data-i="${i}" data-k="cr" aria-label="Herausforderungsgrad">${crs.map(c=>`<option value="${c[0]}" ${c[0]===m.cr?"selected":""}>HG ${c[0]} (${c[1]} EP)</option>`).join("")}</select><label style="display:flex;align-items:center;gap:4px">×<input type="number" min="0" max="50" value="${m.n}" data-i="${i}" data-k="n" aria-label="Anzahl" style="width:4.2rem"></label><button data-del="${i}" aria-label="Entfernen">Entfernen</button></div>`).join("")||`<p class="empty">Noch keine Monster.</p>`;
+  calc();
+}
+function calc(){
+  const n=Math.max(1,+$("#enc-n").value||1),l=Math.min(20,Math.max(1,+$("#enc-l").value||1));
+  const b=budgets[l].map(x=>x*n);
+  $("#budget").innerHTML=[["Niedrig","Low"],["Mittel","Moderate"],["Hoch","High"]].map(([d,e],i)=>`<div><span>${d} <i>${e}</i></span><b>${b[i].toLocaleString("de-DE")}</b><span>EP</span></div>`).join("");
+  const total=mons.reduce((s,m)=>s+(crs.find(c=>c[0]===m.cr)||[0,0])[1]*(+m.n||0),0);
+  let v,cls="";
+  if(total===0)v="Füge Monster hinzu.";
+  else if(total<=b[0]*0.6){v="Sehr leicht. Eher ein Aufwärmen."}
+  else if(total<=b[0]){v="Niedrig. Gut zum Reinkommen."}
+  else if(total<=b[1]){v="Mittel. Ein ordentlicher Kampf."}
+  else if(total<=b[2]){v="Hoch. Echte Gefahr, jemand kann fallen.";cls="hard"}
+  else {v="Über dem Budget für „Hoch“. Kann tödlich sein. Plane einen Ausweg ein.";cls="hard"}
+  const el=$("#verdict");el.className="verdict "+cls;el.textContent=total?`Monster-EP gesamt: ${total.toLocaleString("de-DE")}. ${v}`:v;
+  store("dmh-mons",mons);
+}
+$("#mon-list").addEventListener("input",e=>{const i=e.target.dataset.i;if(i===undefined)return;mons[i][e.target.dataset.k]=e.target.value;calc()});
+$("#mon-list").addEventListener("click",e=>{if(e.target.dataset.del!==undefined){mons.splice(+e.target.dataset.del,1);renderMons()}});
+$("#mon-add").addEventListener("click",()=>{mons.push({name:"",cr:"1/2",n:1});renderMons()});
+["#enc-n","#enc-l"].forEach(s=>$(s).addEventListener("input",calc));
+renderMons();
+
+/* ---------- NPC-Generator ---------- */
+const N={
+first:["Bertram","Odalinde","Gisbert","Hilde","Kunibert","Mechthild","Rupert","Walburga","Fridolin","Isolde","Theobald","Brunhild","Eberhard","Wiebke","Hagen","Ottilie","Leopold","Rosalind","Bodo","Elfriede","Alrik","Sunna","Quirin","Thekla","Mirko","Ylva","Ansgar","Kreszenz","Lenz","Fenja","Dorian","Ragna","Tamsin","Joscha","Merle","Valerius"],
+last:["Kesselflick","Dreifinger","Pfannenstiel","Krummhorn","Rübennase","Mondkuchen","Dünnbier","Kupferzahn","Hagebutt","Moorfuß","Eichelschmied","Schwarzbrot","Bärlauch","Wolkenschieber","Grützbeutel","Nebelstein","Kieselbart","Hasenherz","Federkiel","Zwiebelmann","Silberzunge","Bröselbach","Ofenklappe","Wurzelgrub","von Hochnebel","der Zweite","Stinkfuß","Goldlöckchen","Trollfreund","Funkenflug"],
+species:["Mensch","Mensch","Mensch","Elf","Zwerg","Halbling","Gnom","Ork","Tiefling","Drachenblütiger","Goliath"],
+jobs:[["Bäckerin mit Mehlstaublunge","civ"],["Wirt der Taverne „Zum schiefen Krug“","civ"],["Torwache, seit 12 Stunden im Dienst","guard"],["Söldner auf Jobsuche","pro"],["Straßenkind mit Ambitionen","civ"],["Kräuterhexe","cast"],["Ritter im Ruhestand","vet"],["Taschendieb","thug"],["Wanderprediger","heal"],["Rattenfänger","thug"],["Barde ohne Talent","civ"],["Schmiedin","thug"],["Hafenarbeiter","thug"],["Steuereintreiber","civ"],["Kutscher","civ"],["Fischverkäuferin","civ"],["Lehrling eines Magiers","cast"],["Kopfgeldjägerin","pro"],["Bettler (sehr gut informiert)","civ"],["Adeliger in schlechter Verkleidung","civ"],["Totengräber","thug"],["Alchemist mit verbrannten Augenbrauen","cast"],["Stallbursche","civ"],["Wahrsagerin","cast"],["Stadtschreiber","civ"],["Tempelheilerin","heal"],["Hauptmann der Stadtwache","vet"],["Schmugglerin","thug"],["Händler für „seltene“ Artefakte","civ"],["Jägerin aus den Wäldern","guard"]],
+look:["Ein Auge immer leicht zugekniffen","Riesiger, gepflegter Schnurrbart","Überall Mehlstaub","Stiefel drei Nummern zu groß","Eine Narbe, über die es jedes Mal eine andere Geschichte erzählt","Kaut auf einem Strohhalm","Klimpernde Ohrringe in jeder Farbe","Strickpullover mit Katzenmuster","Gesicht voller Ruß","Perfekt frisiert, aber barfuß","Tätowierung mit Rechtschreibfehler","Trägt eine Rüstung aus Kochtöpfen","Hat einen Papagei auf der Schulter, der nur flucht","Sehr lange Fingernägel, frisch lackiert","Kleidung komplett in Senfgelb","Riecht stark nach Lavendel, um etwas anderes zu überdecken","Hut mit viel zu vielen Federn","Sehr klein, steht immer auf etwas drauf"],
+quirk:["Spricht von sich in der dritten Person","Hat eine Ente dabei, die „Frau Bürgermeisterin“ heißt","Hält die Party für Steuerprüfer","Riecht nach Zwiebeln und entschuldigt sich ständig","Beendet jeden Satz mit einer Frage, oder?","Sammelt Zähne. Nicht die eigenen","Glaubt, dass Tauben Spione des Königs sind","Niest jedes Mal, wenn jemand lügt","Hat für alles ein Sprichwort, alle selbst erfunden","Flirtet ungeschickt mit dem stärksten Charakter","Trägt drei Hüte übereinander","Verkauft heimlich „magische“ Kiesel","Hat panische Angst vor Schmetterlingen","Erzählt ungefragt von der Ex","Duzt alle, auch Adelige","Korrigiert die Grammatik der Party","Isst während des Gesprächs eine rohe Zwiebel wie einen Apfel","Hält den Barden für einen alten Freund","Ist eigentlich drei Kobolde in einem Mantel (wenn du willst)","Hat einen unsichtbaren Hund namens Brösel","Antwortet auf wichtige Fragen mit einem Lied","Flüstert alles, auch Unwichtiges","Schreibt eifrig mit, was die Party sagt","Bietet ständig Suppe an","Lacht immer drei Sekunden zu spät","Niest bei jedem Zauber, behauptet Magieallergie","Kennt angeblich jeden „persönlich“","Zählt laut mit, wie oft jemand „äh“ sagt","Will jedem die Hand schütteln, sehr lange","Hat ein Haustier-Huhn im Rucksack"],
+voice:["Sehr laut","Nuschelt","Extrem langsam, mit Pausen","Hochgestochen, verwendet Fremdwörter falsch","Piepsig","Rauchig, wie nach 40 Jahren Pfeife","Singend","Nur kurze Hauptsätze","Dialekt deiner Wahl","Dramatische Pausen vor jedem wichtigen Wort","Spricht schnell, holt kaum Luft","Sehr förmlich, „werte Herrschaften“"],
+want:["Will die Taverne vom Onkel erben","Sucht die entlaufene Ziege „Gräfin Mecker“","Will berühmt werden, egal wofür","Will einfach nur Feierabend","Sucht Abenteurer für einen „ganz einfachen“ Auftrag","Will die Stadtwache verklagen","Braucht bis morgen dringend 30 Goldmünzen","Will einmal im Leben einen Drachen sehen","Sucht jemanden, der einen Liebesbrief überbringt","Will das beste Käserezept des Landes stehlen","Will beweisen, dass der Bürgermeister ein Werwolf ist","Will aus der Stadt raus, egal wie"],
+secret:["Schuldet der Diebesgilde Geld","Ist der gesuchte Kuchendieb","Hat eine Schatzkarte, kann aber nicht lesen","Ist ein Spitzel der Stadtwache","Ist adelig und auf der Flucht","War früher Abenteurer und ist feige geflohen","Weiß, wo die verschwundene Person ist","Hat gar keins. Wirklich nicht. (Lügt.)","Ist mit dem Bösewicht verwandt","Hat aus Versehen einen Fluch ausgelöst","Ist in Wahrheit viel reicher, als es aussieht","Hört nachts Stimmen aus dem Keller"],
+line:["„Ihr seht aus wie Leute, die Probleme lösen. Oder machen.“","„Wenn ihr wegen der Ziege hier seid: Ich war’s nicht.“","„Kauft ihr was oder starrt ihr nur?“","„Endlich! Ihr seid spät. … Wer seid ihr eigentlich?“","„Psst. Nicht hier. Hinter den Fässern.“","„Ah, Abenteurer. Bitte nichts anzünden.“","„Das letzte Mal, als jemand mit Schwert hier reinkam, brauchten wir einen neuen Tresen.“","„Ich hab nichts gesehen. Was auch immer es war.“","„Ihr habt da was … nein, andere Seite.“","„Suppe?“","„Mein Cousin kennt jemanden, der jemanden kennt.“","„Ihr riecht nach Ärger. Und nach Pferd.“"],
+fight:["Flieht schreiend und ruft nach der Wache","Wirft mit dem, was gerade in der Hand ist","Ergibt sich sofort und bietet Bestechung an","Kämpft überraschend gut","Fällt in Ohnmacht (echt oder gespielt, würfle Motiv erkennen)","Kämpft, bis Blutend, dann fleht um Gnade","Versteckt sich unter dem nächsten Tisch","Ruft drei Freunde, die zufällig in der Nähe sind","Droht mit einem sehr einflussreichen Onkel","Kämpft bis zum Ende, aus verletztem Stolz"]
+};
+const TIERS={
+civ:{name:"Zivilist",cr:"0",xp:10,ac:"10",hp:"4 (1W8)",speed:"9 m",ab:[0,0,0,0,0,0],acts:["<b>Knüppel oder Werkzeug.</b> Nahkampf: +2 zum Treffen, 2 (1W4) Wucht."],extra:"Flieht, sobald Blut fließt."},
+thug:{name:"Raufbold",cr:"1/2",xp:100,ac:"12 (Lederrüstung)",hp:"16 (3W8+3)",speed:"9 m",ab:[2,1,1,0,0,0],acts:["<b>Mehrfachangriff.</b> Zwei Angriffe mit dem Knüppel.","<b>Knüppel oder Dolch.</b> Nahkampf: +4 zum Treffen, 5 (1W6+2) Wucht oder Stich.","<b>Schmutziger Trick (1/Tag).</b> Sand in die Augen: Ziel macht CON-Rettungswurf SG 11, bei Fehlschlag bis Ende seines nächsten Zugs Blind."],extra:"Hat ein Messer mehr, als man denkt."},
+guard:{name:"Wache / Jäger",cr:"1/8",xp:25,ac:"16 (Kettenhemd, Schild)",hp:"11 (2W8+2)",speed:"9 m",ab:[1,1,1,0,0,0],acts:["<b>Speer.</b> Nahkampf oder Wurf (6/18 m): +3 zum Treffen, 4 (1W6+1) Stich.","<b>Alarm.</b> Als Bonusaktion pfeifen oder rufen. Nach 1W4 Runden kommen 1W3 weitere Wachen."],extra:"Passive Wahrnehmung 12."},
+pro:{name:"Profi-Kämpfer",cr:"2",xp:450,ac:"15 (Schuppenpanzer)",hp:"38 (7W8+7)",speed:"9 m",ab:[3,1,1,0,1,0],acts:["<b>Mehrfachangriff.</b> Zwei Angriffe mit dem Schwert.","<b>Langschwert.</b> Nahkampf: +5 zum Treffen, 7 (1W8+3) Hieb.","<b>Schwere Armbrust.</b> Fernkampf 30/120 m: +3 zum Treffen, 6 (1W10+1) Stich."],extra:"Kämpft für Geld, nicht für Ehre. Ein besseres Angebot wirkt."},
+cast:{name:"Zauberkundig",cr:"1",xp:200,ac:"12 (15 mit Magierrüstung)",hp:"22 (5W8)",speed:"9 m",ab:[-1,2,0,3,1,0],acts:["<b>Arkaner Stoß.</b> Fernkampf-Zauberangriff 36 m: +5 zum Treffen, 8 (1W10+3) Energie.","<b>Magisches Geschoss (2/Tag).</b> Drei Geschosse treffen automatisch, je 3 (1W4+1) Energie.","<b>Schild (Reaktion, 1/Tag).</b> +5 RK bis zum Beginn des eigenen nächsten Zugs."],extra:"Zauber-SG 13. Flieht eher, als zu sterben."},
+heal:{name:"Heiler / Priester",cr:"1/4",xp:50,ac:"11",hp:"13 (3W8)",speed:"9 m",ab:[0,0,0,0,2,1],acts:["<b>Heiliges Licht.</b> Ziel in 18 m macht DEX-Rettungswurf SG 12, bei Fehlschlag 4 (1W8) gleißender Schaden.","<b>Heilende Hand (2/Tag).</b> Bonusaktion: eine Kreatur in Berührungsreichweite erhält 7 (1W8+3) TP."],extra:"Heilt zuerst Verbündete, dann sich selbst."},
+vet:{name:"Veteran",cr:"3",xp:700,ac:"17 (Schienenpanzer)",hp:"58 (9W8+18)",speed:"9 m",ab:[3,1,2,0,1,1],acts:["<b>Mehrfachangriff.</b> Zwei Angriffe mit dem Schwert.","<b>Langschwert.</b> Nahkampf: +5 zum Treffen, 7 (1W8+3) Hieb, beidhändig 8 (1W10+3).","<b>Parade (Reaktion).</b> +2 RK gegen einen Nahkampfangriff, den er sieht."],extra:"Erfahren. Erkennt sofort, wer in der Gruppe gefährlich ist."}
+};
+const TIER_ORDER=["civ","guard","heal","thug","cast","pro","vet"];
+$("#npc-tier").innerHTML=`<option value="auto">Passend zum Beruf</option>`+TIER_ORDER.map(k=>`<option value="${k}">${TIERS[k].name} (HG ${TIERS[k].cr})</option>`).join("");
+$("#npc-job-list").innerHTML=N.jobs.map(j=>`<option value="${esc(j[0])}"></option>`).join("");
+const FIELDS=[["species","Volk"],["job","Beruf"],["look","Aussehen"],["quirk","Eigenart"],["voice","Sprechweise"],["want","Will"],["secret","Geheimnis"],["line","Erster Satz"],["fight","Bei Angriff"]];
+let npc={},locks={},hist=[],saved=store("dmh-saved")||[];
+function rollField(k){
+  switch(k){case "name":return pick(N.first)+" "+pick(N.last);case "species":return pick(N.species);case "job":{const j=pick(N.jobs);return j[0]}
+  default:return pick(N[k])}}
+function jobTier(job){const j=N.jobs.find(x=>x[0]===job);return j?j[1]:"civ"}
+function rollNpc(){const n={...npc};["name",...FIELDS.map(f=>f[0])].forEach(k=>{if(!locks[k]||!n[k])n[k]=rollField(k)});const fj=$("#npc-job").value.trim();if(fj)n.job=fj;npc=n;
+  hist.unshift({...npc});hist=hist.slice(0,8);renderNpc();renderLists()}
+const sgn=v=>(v>=0?"+":"−")+Math.abs(v);
+function tierKey(){const t=$("#npc-tier").value;return t==="auto"?jobTier(npc.job):t}
+function renderNpc(){
+  $("#npc-name").textContent=npc.name;
+  $("#npc-sub").textContent=`${npc.species} · ${npc.job}`;
+  $("#npc-fields").innerHTML=FIELDS.map(([k,l])=>`<div class="f-row ${k==="line"?"quote":""}"><div class="lab">${l}</div><div class="val">${esc(npc[k])}</div><button class="lock" data-lock="${k}" aria-pressed="${!!locks[k]}">${locks[k]?"Gesperrt":"Sperren"}</button></div>`).join("");
+  document.querySelector('[data-lock="name"]').setAttribute("aria-pressed",!!locks.name);
+  document.querySelector('[data-lock="name"]').textContent=locks.name?"Gesperrt":"Sperren";
+  const t=TIERS[tierKey()];const ab=["STR","DEX","CON","INT","WIS","CHA"];
+  $("#npc-stats").innerHTML=`<h4>${esc(npc.name)}</h4><p style="font-style:italic;color:var(--muted)">${esc(npc.species)}, ${t.name} · HG ${t.cr} (${t.xp} EP)</p>
+   <div class="sb-line"><span><b>RK</b> ${t.ac}</span><span><b>TP</b> ${t.hp}</span><span><b>Bewegung</b> ${t.speed}</span><span><b>Initiative</b> ${sgn(t.ab[1])}</span></div>
+   <div class="sb-abil">${t.ab.map((v,i)=>`<div>${ab[i]}<b>${sgn(v)}</b></div>`).join("")}</div>
+   <div class="sb-act">${t.acts.map(a=>`<p>${a}</p>`).join("")}</div>
+   <p style="font-size:.95rem"><b>Verhalten:</b> ${esc(npc.fight)}. ${t.extra}</p>
+   <p style="font-size:.85rem;color:var(--muted)">Rettungswürfe: einfach den Attributsmodifikator nehmen.</p>`;
+  const c=$("#npc-card");c.classList.remove("flash");void c.offsetWidth;c.classList.add("flash");
+}
+function renderLists(){
+  const item=(n,i,src)=>`<button data-src="${src}" data-i="${i}"><b>${esc(n.name)}</b><span>${esc(n.job)}</span></button>`;
+  $("#hist").innerHTML=hist.length>1?hist.slice(1).map((n,i)=>item(n,i+1,"h")).join(""):`<p class="empty">Noch nichts.</p>`;
+  $("#saved").innerHTML=saved.length?saved.map((n,i)=>`<div class="mon-row">${item(n,i,"s")}<button data-unsave="${i}" aria-label="Vergessen">×</button></div>`).join(""):`<p class="empty">Klick auf „Merken“, um einen NPC hier zu behalten. Wird nur in diesem Browser gespeichert.</p>`;
+}
+function npcText(){return [npc.name,`${npc.species}, ${npc.job}`,...FIELDS.slice(2).map(([k,l])=>`${l}: ${npc[k]}`)].join("\n")}
+document.addEventListener("click",e=>{
+  const l=e.target.closest("[data-lock]");if(l){const k=l.dataset.lock;locks[k]=!locks[k];renderNpc();return}
+  const h=e.target.closest("[data-src]");if(h){npc={...(h.dataset.src==="h"?hist:saved)[+h.dataset.i]};renderNpc();return}
+  const u=e.target.closest("[data-unsave]");if(u){saved.splice(+u.dataset.unsave,1);store("dmh-saved",saved);renderLists()}
+});
+$("#npc-roll").addEventListener("click",rollNpc);
+$("#npc-tier").addEventListener("change",renderNpc);
+$("#npc-job").addEventListener("change",()=>{const v=$("#npc-job").value.trim();if(v){npc.job=v;if(hist[0])hist[0].job=v;renderNpc();renderLists()}});
+$("#npc-job").addEventListener("keydown",e=>{if(e.key==="Enter")rollNpc()});
+$("#npc-save").addEventListener("click",()=>{if(saved.some(s=>s.name===npc.name&&s.job===npc.job)){toast("Schon gemerkt");return}saved.unshift({...npc});saved=saved.slice(0,20);store("dmh-saved",saved);renderLists();toast("Gemerkt")});
+$("#npc-copy").addEventListener("click",()=>{const t=npcText();try{navigator.clipboard.writeText(t).then(()=>toast("Kopiert"),()=>toast("Kopieren nicht erlaubt. Text bitte markieren."))}catch(err){toast("Kopieren nicht erlaubt. Text bitte markieren.")}});
+rollNpc();
+
+/* ---------- Charaktere ---------- */
+const RG_KEYS=["rg-name","rg-species","rg-sub","rg-ac","rg-hp","rg-pp","rg-dc","rg-atk","rg-notes"];
+const rg=store("dmh-ranger")||{};
+function rgRow(){const v=k=>rg[k]?esc(rg[k]):"?";
+  $("#rg-row").innerHTML=`<td><b>${rg["rg-name"]?esc(rg["rg-name"]):"Ranger"}</b><br><span class="en">Ranger 5${rg["rg-sub"]?" · "+esc(rg["rg-sub"]):""}</span></td><td class="n">${v("rg-ac")}</td><td class="n">${v("rg-hp")}</td><td class="n">${v("rg-pp")}</td><td class="n">${v("rg-dc")}</td><td>?</td><td>${rg["rg-species"]?esc(rg["rg-species"]):"?"}</td>`;
+  const b=$("#ma-rg");b.hidden=!rg["rg-ac"];b.dataset.ac=rg["rg-ac"]||"";b.textContent=`${rg["rg-name"]||"Ranger"} (RK ${rg["rg-ac"]||"?"})`;}
+RG_KEYS.forEach(k=>{const el=document.getElementById(k);if(rg[k]!=null)el.value=rg[k];el.addEventListener("input",()=>{rg[k]=el.value;store("dmh-ranger",rg);rgRow()})});
+rgRow();
+document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>document.getElementById(b.dataset.jump).scrollIntoView({behavior:"smooth",block:"start"})));
+$("#ma-targets").addEventListener("click",e=>{const ac=e.target.dataset&&e.target.dataset.ac;if(ac){$("#ma-ac").value=ac;toast("RK "+ac+" eingetragen")}});
+
+/* ---------- Reiter ---------- */
+const TABS=["grundlagen","wuerfe","kampf","zustaende","welt","begegnung","charaktere","npc"];
+function show(){const q=$("#q").value.trim();if(q)return search(q);
+  let t=location.hash.slice(1);if(!TABS.includes(t))t="grundlagen";
+  document.querySelectorAll(".panel").forEach(p=>p.hidden=p.dataset.tab!==t);
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current",a.getAttribute("href")==="#"+t?"page":"false"));
+  try{store("dmh-tab",t)}catch(e){}}
+window.addEventListener("hashchange",()=>{$("#q").value="";clearSearch();show();window.scrollTo(0,0)});
+if(!location.hash){const t=store("dmh-tab");if(t&&TABS.includes(t))history.replaceState(null,"","#"+t)}
+
+/* ---------- Suche ---------- */
+function clearSearch(){document.querySelectorAll(".hidden-by-search").forEach(e=>e.classList.remove("hidden-by-search"));$("#searchnote").hidden=true}
+function search(q){
+  clearSearch();const ql=q.toLowerCase();let hits=0;
+  document.querySelectorAll(".panel").forEach(p=>{
+    if(p.dataset.tab==="npc"){p.hidden=true;return}
+    p.hidden=false;let any=false;
+    p.querySelectorAll(".card,.abil .card").forEach(c=>{
+      const rows=c.querySelectorAll("tbody tr");
+      if(rows.length>3){let rh=0;rows.forEach(r=>{const m=r.textContent.toLowerCase().includes(ql);r.classList.toggle("hidden-by-search",!m);if(m)rh++});
+        const head=(c.querySelector("h3")?.textContent||"").toLowerCase().includes(ql);
+        if(head){rows.forEach(r=>r.classList.remove("hidden-by-search"))}
+        const m=rh>0||head;c.classList.toggle("hidden-by-search",!m);if(m){any=true;hits++}}
+      else{const m=c.textContent.toLowerCase().includes(ql);c.classList.toggle("hidden-by-search",!m);if(m){any=true;hits++}}
+    });
+    p.querySelectorAll("h2,.lead").forEach(h=>h.classList.add("hidden-by-search"));
+    if(!any)p.hidden=true;
+  });
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current","false"));
+  const n=$("#searchnote");n.hidden=false;n.textContent=hits?`${hits} Treffer für „${q}“. Feld leeren, um zurückzukehren.`:`Nichts gefunden für „${q}“. Versuch den englischen oder deutschen Begriff.`;
+}
+$("#q").addEventListener("input",()=>{if(!$("#q").value.trim()){clearSearch();}show()});
+show();
+})();
+</script>
+
+</body>
+</html>
